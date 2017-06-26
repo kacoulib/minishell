@@ -65,7 +65,7 @@ char         *get_exeutable_path(char *command, char *env[])
 int         launch(char *env[], char **av)
 {
     char    *command;
-    char    buf[50];
+    // char    buf[50];
     
     if (!is_bultin(av, env))
     {
@@ -79,25 +79,27 @@ int         launch(char *env[], char **av)
 
 int         main(int ac, char *av[], char *env[])
 {
-    int     i;
     char    buf[PATH_MAX + 1];
     pid_t   cpid;
 
     cpid = fork();
-    if (cpid == -1)
-        printf("Error fork not valid pid\n");
-    else if (cpid == 0)
+    if (ac)
     {
-        launch(env, av);
-    }
-    else
-    {
-        wait();
-        printf("$>");
-        while (read(0, buf, 255) > 0)
+        if (cpid == -1)
+            printf("Error fork not valid pid\n");
+        else if (cpid == 0)
         {
-            printf("buff = %s\n", buf);
-            execve("/bin/pwd", ft_strsplit(buf, ' '), env);
+            launch(env, av);
+        }
+        else
+        {
+            // wait();
+            printf("$>");
+            while (read(0, buf, 255) > 0)
+            {
+                printf("buff = %s\n", buf);
+                execve("/bin/pwd", ft_strsplit(buf, ' '), env);
+            }
         }
     }
     return (0);

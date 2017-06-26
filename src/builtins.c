@@ -42,7 +42,7 @@ int         builtin_cd(char **av, char *env[])
 int         builtin_echo(char **av)
 {
     int     i;
-    char    *flags[1];
+    char    *flags[2];
 
     flags[0] = ft_strdup(" n e E --help --version ");
     flags[1] = get_glags(flags[0], av, "echo");
@@ -64,6 +64,8 @@ int         builtin_echo(char **av)
 
 int         builtin_exit(int status, int pid)
 {
+    if (!status || !pid)
+        return (0);
     return (1);
 }
 
@@ -77,7 +79,7 @@ int         builtin_exit(int status, int pid)
 
 int         builtin_env(char *env[], char **av)
 {
-    char    *flags[1];
+    char    *flags[2];
 
     flags[0] = ft_strdup(" i 0 u --ignore-environment --null --unset --help --version ");
     flags[1] = get_glags(flags[0], av, "env");
@@ -134,7 +136,8 @@ int         builtin_env_extra_unset(char *env[], char **av, char *flags)
     {
         if (ft_strstr(av[i], "--ignore-environment=") || ft_strstr(av[i], "-u="))
         {
-
+            if (flags)
+                ;
         }
     }
     return (1);
