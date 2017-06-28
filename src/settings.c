@@ -1,11 +1,12 @@
 #include "../minishell.h"
 
 /*
-* get the key and value from the enviroment path depennding on a key
+* Get the key and value from the enviroment path depennding on a key
 *
-* @param  env [an array of key pair vaule]
-* @param  key [the key that should be find in the env]
-* @return     [return NULL if the key don't exist otherwise return the key and value]
+* @param  { env }   An array of key pair vaule
+* @param  { key }   The key that should be find in the env
+*
+* @return    [return NULL if the key don't exist otherwise return the key and value]
 */
 
 char         *ft_getenv(char *env[], char *key)
@@ -24,9 +25,10 @@ char         *ft_getenv(char *env[], char *key)
 /*
 * Switch two env
 *
-* @param  env [an array of key pair vaule]
-* @param  s1 [the first key in env that should replace]
-* @param  s1 [the second key in env that should replace]
+* @param  { env }   An array of key pair vaule]
+* @param  { s1 }    The first key in env that should replace]
+* @param  { s1 }    The second key in env that should replace]
+*
 * @return     [return 1 on success otherwise return 0]
 */
 
@@ -80,20 +82,22 @@ int     index_of_array(char **arr, char *key)
     int i;
 
     i = -1;
+    // printf("____%s___\n", key);
     while (arr[++i])
         if (ft_strcmp(arr[i], key) == 0)
             return (i);
     return (-1);
 }
 
-/**
- * if the param is single dash
+/*
+ * If the param is single dash
  * e.g: -en
  *
- * @param  flags [the command flags]
- * @param  av [the argument pass through the program]
- * @param  command [the name of the command]
- * @return         [description]
+ * @param  { flags }    The command flags]
+ * @param  { av }       The argument pass through the program]
+ * @param  { command }  The name of the command]
+ *
+ * @return 
  */
 
 char        *get_single_flags(char *flags[], char *av, char *command)
@@ -124,12 +128,13 @@ char        *get_single_flags(char *flags[], char *av, char *command)
     return (r);
 }
 
-/**
- * set the parm flags with flags
+/*
+ * Get the all the flags passed to the command
+ * e.g echo -e          // the flag -e is passed to the command echo
  *
- * @param  flags [the command flags]
- * @param  av [the argument pass through the program]
- * @param  command [the name of the command]
+ * @param  { except_flags }     The command flags that the command can have
+ * @param  { av }               The argument pass through the program
+ * @param  { command }          The name of the command
  * @return      [return NULL on error or if no flags are found otherwise return the flags]
  */
 
@@ -140,11 +145,11 @@ char         *get_glags(char *except_flags, char **av, char *command)
     char    *tmp;
     char    *r;
 
-    i = 1;
+    i = -1;
     flags = ft_strsplit(except_flags, ' ');
     r = ft_strdup(" ");
     while (av[++i] && av[i][0] == '-' && av[i][1])
-	{
+    {
         r = ft_strjoin(r, " ");
         if (av[i][1] != '-')
         {
@@ -160,18 +165,19 @@ char         *get_glags(char *except_flags, char **av, char *command)
             set_errors(1, command, av[i]);
             return (NULL);
         }
-	}
+    }
     r = ft_strjoin(r, " ");
     free_arr(flags);
     return (r); // free r and retunn null if an error occurred
 }
 
-/**
- * set the parm flags even if the key contain an assignation
+/*
+ * Set the parm flags even if the key contain an assignation
  *
- * @param  flags [the command flags]
- * @param  av [the argument pass through the program]
- * @param  command [the name of the command]
+ * @param  { flags }    The command flags
+ * @param  { av }       The argument pass through the program
+ * @param  { command }  The name of the command
+ *
  * @return      [return NULL on error or if no flags are found otherwise return the flags]
  */
 
@@ -210,10 +216,12 @@ char         *get_compose_glags(char *except_flags, char **av, char *command)
 
 /*
 *
-* display errors depennding on an id
-* @param  id   [the id for the error]
-* @param  command [the name of the command]
-* @param  name [the error name]
+* Display errors depennding on an id
+*
+* @param  { id }        The id for the error]
+* @param  { command }   The name of the command]
+* @param  { name }      The error name]
+*
 * @return      [return 0]
 */
 
@@ -240,11 +248,11 @@ int         set_errors(int id, char *command, char *name)
 }
 
 /*
-* set_args set the new argument to be pass to the execve function
+* Set_args set the new argument to be pass to the execve function
 *
-* @param  av      [the main argument value that contain all vargs]
-* @param  newargv [the new argument to be set]
-* @param  ac      [the number of argument]
+* @param  { av }      The main argument value that contain all vargs
+* @param  { newargv } The new argument to be set
+* @param  { ac }      The number of argument
 */
 
 void         set_new_args(char **av, char *newargv[], int ac)

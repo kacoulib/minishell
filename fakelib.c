@@ -366,7 +366,6 @@ char		*ft_strtrim(char const *s)
 	return (ft_strsub(s, 0, j));
 }
 
-
 char	*ft_strcpy(char *s1, const char *s2)
 {
 	int	i;
