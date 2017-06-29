@@ -58,13 +58,11 @@ int         swap_env(char *env[], char *s1, char *s2)
 int         get_args_limit(char **av)
 {
     int     i;
-    int     j;
 
-    i = 1;
-    j = 0;
+    i = -1;
     while (av[++i] && av[i][0] == '-' && av[i][1])
-        j++;
-    return (j ? ++j : j);
+    ;
+    return (i);
 }
 
 int         free_arr(char **arr)
@@ -82,7 +80,7 @@ int     index_of_array(char **arr, char *key)
     int i;
 
     i = -1;
-    // printf("____%s___\n", key);
+    
     while (arr[++i])
         if (ft_strcmp(arr[i], key) == 0)
             return (i);
@@ -129,7 +127,7 @@ char        *get_single_flags(char *flags[], char *av, char *command)
 }
 
 /*
- * Get the all the flags passed to the command
+ * Filter and get all flags passed to the command
  * e.g echo -e          // the flag -e is passed to the command echo
  *
  * @param  { except_flags }     The command flags that the command can have
@@ -159,7 +157,9 @@ char         *get_glags(char *except_flags, char **av, char *command)
             free(tmp);
         }
         else if (index_of_array(flags, av[i]) >= 0)
+        {
             r = ft_strjoin(r, av[i]);
+        }
         else
         {
             set_errors(1, command, av[i]);
@@ -168,11 +168,11 @@ char         *get_glags(char *except_flags, char **av, char *command)
     }
     r = ft_strjoin(r, " ");
     free_arr(flags);
-    return (r); // free r and retunn null if an error occurred
+    return (r); // free r and return null if an error occurred
 }
 
 /*
- * Set the parm flags even if the key contain an assignation
+ * Set the parm flags even if thecl key contain an assignation
  *
  * @param  { flags }    The command flags
  * @param  { av }       The argument pass through the program

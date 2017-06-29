@@ -16,16 +16,16 @@ int			builtin_cd(char **av, char *env[])
 	char	*path;
 
 	error_id = -1;
-	if (av[2] && ft_strcmp(av[2], "--") != 0)
+	if (av[0] && ft_strcmp(av[0], "--") != 0)
 	{
-		if (ft_strcmp(av[2], "-") == 0)
+		if (ft_strcmp(av[0], "-") == 0)
 		{
 			if (swap_env(env, "OLDPWD=", "_="))
 				error_id = 2;
 			path = ft_strsplit(ft_getenv(env, "_="), '=')[1];
 		}
 		else
-			path = av[2];
+			path = av[0];
 	}
 	else
 	{
@@ -36,6 +36,7 @@ int			builtin_cd(char **av, char *env[])
 		return (set_errors(error_id, NULL, NULL));
 	if (chdir(path) < 0 && (error_id = 0))
 		set_errors(error_id, NULL, path);
+	ft_print(ft_strsplit(ft_getenv(env, "PWD="), '=')[1], ":", NULL, NULL);
 	return (1);
 }
 
@@ -45,11 +46,16 @@ int         builtin_echo(char **av)
 	char	*flags[2];
 
 	if (!av || !av[0])
+	{
+		ft_putchar('\n');
 		return (1);
+	}
 	flags[0] = ft_strdup(" n e E --help --version ");
 	flags[1] = get_glags(flags[0], av, "echo");
-	printf("ok %s %d \n", flags[1], 0);
-	i = ft_strlen(ft_strtrim(flags[1])) ? get_args_limit(av) : 1;
+	// i = ft_strlen(ft_strtrim(flags[1])) ? get_args_limit(av) : 1;
+	i = get_args_limit(av) - 1;
+	printf("ok %d %s %s\n", i, av[0], flags[1]);
+	return(0);
 	while (av[++i])
 	{
 		if (ft_indexof(av[i], '\\') > -1)
@@ -60,15 +66,13 @@ int         builtin_echo(char **av)
 	}
 	if (ft_strlen(flags[1]) == 0 || ft_strstr(flags[1], " n ") == 0)
 		ft_putchar('\n');
-	free(flags[0]);
-	free(flags[1]);
+	free_arr(flags);
 	return (1);
 }
 
-int         builtin_exit(int status, int pid)
+int         builtin_exit(int status)
 {
-	if (!status || !pid)
-		return (0);
+	exit(status);
 	return (1);
 }
 
@@ -82,26 +86,29 @@ int         builtin_exit(int status, int pid)
 
 int         builtin_env(char *env[], char **av)
 {
+	int		show_env;
 	char	*flags[2];
 
+	show_env = 1;
 	flags[0] = ft_strdup(" i 0 u --ignore-environment --null --unset --help --version ");
 	flags[1] = get_glags(flags[0], av, "env");
-	if (ft_strlen(ft_strtrim(flags[1])) == 0)
-		return (0);
-	if (ft_strstr(flags[1], " --help "))
-	{
-		ft_putendl("Usage: env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]");
-		ft_putendl("Set each NAME to VALUE in the env and run COMMAND.\n");
-		ft_putendl("-i, --ignore-environment\nstart with empty environment");
-		ft_putendl("-0, --null\nend each output line with 0 not newline");
-		ft_putendl("-u, --unset=NAME\nremove variable from the environment.");
+	if (flags[1])
+	{		
+		if (ft_strstr(flags[1], " --help ") && (show_env = 0))
+		{
+			ft_putendl("Usage: env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]");
+			ft_putendl("Set each NAME to VALUE in the env and run COMMAND.\n");
+			ft_putendl("-i, --ignore-environment\nstart with empty environment");
+			ft_putendl("-0, --null\nend each output line with 0 not newline");
+			ft_putendl("-u, --unset=NAME\nremove variable from the environment.");
+		}
+		else if (ft_strstr(flags[1], " --version ") && (show_env = 0))
+			ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
+		else if ((ft_strstr(flags[1], " --ignore-environment ") ||
+			ft_strstr(flags[1], " i ")) && (show_env = 0))
+			env[0] = NULL;
 	}
-	else if (ft_strstr(flags[1], " --version "))
-		ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
-	else if (ft_strstr(flags[1], " --ignore-environment ") ||
-		ft_strstr(flags[1], " i "))
-		env[0] = NULL;
-	else
+	if (show_env)
 		builtin_env_extra(env, av, flags[1]);
 	return (0);
 }
@@ -113,19 +120,20 @@ int         builtin_env_extra(char *env[], char **av, char *flags)
 	i = -1;
 
 	// if (ft_strstr(flags, " --help "))
-	printf("____%s, %s, %s\n", flags, av[0], env[0]);
-
-	// while (env[++i])
-	// {
-	//     if (ft_strcmp(env[i], "") != 0)
-	//     {
-	//
-	//         if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
-	//             ft_putstr(env[i]);
-	//         else
-	//             ft_putendl(env[i]);
-	//     }
-	// }
+	// printf("____%s, %s, %s\n", flags, av[0], env[0]);
+	if (av)
+	;
+	while (env[++i])
+	{
+	    if (ft_strcmp(env[i], "") != 0)
+	    {
+	
+	        if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
+	            ft_putstr(env[i]);
+	        else
+	            ft_putendl(env[i]);
+	    }
+	}
 	free(flags);
 	return (1);
 }
