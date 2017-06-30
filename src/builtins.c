@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/06/30 16:16:25 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/06/30 16:16:27 by kacoulib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 /*
- * Move into a specific folder.
- * If the path == "--" or is not specify the path will be the home path.
- * Otherwise it will try to move into it.
- *
- * @param  av  [an array of argument passed to the program]
- * @param  env [an array of key pair vaule]
- * @return     [if sucess return 1 else print error and return 0]
- */
+** Move into a specific folder.
+** If the path == "--" or is not specify the path will be the home path.
+** Otherwise it will try to move into it.
+**
+** @param  av  [an array of argument passed to the program]
+** @param  env [an array of key pair vaule]
+** @return     [if sucess return 1 else print error and return 0]
+*/
 
 int			builtin_cd(char **av, char *env[])
 {
@@ -37,10 +49,10 @@ int			builtin_cd(char **av, char *env[])
 	if (chdir(path) < 0 && (error_id = 0))
 		set_errors(error_id, NULL, path);
 	ft_print(ft_strsplit(ft_getenv(env, "PWD="), '=')[1], ":", NULL, NULL);
-	return (1);
+	return (true);
 }
 
-int         builtin_echo(char **av)
+int			builtin_echo(char **av)
 {
 	int		i;
 	char	*flags[2];
@@ -48,14 +60,11 @@ int         builtin_echo(char **av)
 	if (!av || !av[0])
 	{
 		ft_putchar('\n');
-		return (1);
+		return (true);
 	}
 	flags[0] = ft_strdup(" n e E --help --version ");
 	flags[1] = get_glags(flags[0], av, "echo");
-	// i = ft_strlen(ft_strtrim(flags[1])) ? get_args_limit(av) : 1;
 	i = get_args_limit(av) - 1;
-	printf("ok %d %s %s\n", i, av[0], flags[1]);
-	return(0);
 	while (av[++i])
 	{
 		if (ft_indexof(av[i], '\\') > -1)
@@ -66,42 +75,42 @@ int         builtin_echo(char **av)
 	}
 	if (ft_strlen(flags[1]) == 0 || ft_strstr(flags[1], " n ") == 0)
 		ft_putchar('\n');
-	free_arr(flags);
-	return (1);
+	free(flags[1]);
+	return (true);
 }
 
-int         builtin_exit(int status)
+int			builtin_exit(int status)
 {
 	exit(status);
-	return (1);
+	return (true);
 }
 
 /*
- * Execute any process with the set environment except builtins.
- * the only builtin that's allow is env it self
- *
- * @param	env [description]
- * @return	[1 if another command has to be execute otherwise return 0]
- */
+** Execute any process with the set environment except builtins.
+** the only builtin that's allow is env it self
+**
+** @param	env [description]
+** @return	[1 if another command has to be execute otherwise return 0]
+*/
 
-int         builtin_env(char *env[], char **av)
+int			builtin_env(char *env[], char **av)
 {
 	int		show_env;
 	char	*flags[2];
 
 	show_env = 1;
-	flags[0] = ft_strdup(" i 0 u --ignore-environment --null --unset --help --version ");
+	flags[0] = ft_strdup(" i u --ignore-environment --null --unset --help --version ");
 	flags[1] = get_glags(flags[0], av, "env");
 	if (flags[1])
-	{		
+	{
 		if (ft_strstr(flags[1], " --help ") && (show_env = 0))
 		{
-			ft_putendl("Usage: env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]");
-			ft_putendl("Set each NAME to VALUE in the env and run COMMAND.\n");
-			ft_putendl("-i, --ignore-environment\nstart with empty environment");
-			ft_putendl("-0, --null\nend each output line with 0 not newline");
-			ft_putendl("-u, --unset=NAME\nremove variable from the environment.");
+			ft_putendl("Usage: please type man help for more information\n");
+			ft_putendl("The options are:\n");
+			ft_putendl("-i, --ignore-environment, -0, -u\n");
 		}
+		else if (ft_strstr(flags[1], " -i "))
+			show_env = 0;
 		else if (ft_strstr(flags[1], " --version ") && (show_env = 0))
 			ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
 		else if ((ft_strstr(flags[1], " --ignore-environment ") ||
@@ -113,32 +122,30 @@ int         builtin_env(char *env[], char **av)
 	return (0);
 }
 
-int         builtin_env_extra(char *env[], char **av, char *flags)
+int			builtin_env_extra(char *env[], char **av, char *flags)
 {
 	int		i;
 
 	i = -1;
-
 	// if (ft_strstr(flags, " --help "))
 	// printf("____%s, %s, %s\n", flags, av[0], env[0]);
 	if (av)
-	;
+		;
 	while (env[++i])
 	{
-	    if (ft_strcmp(env[i], "") != 0)
-	    {
-	
-	        if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
-	            ft_putstr(env[i]);
-	        else
-	            ft_putendl(env[i]);
-	    }
+		if (ft_strcmp(env[i], "") != 0)
+		{
+			if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
+				ft_putstr(env[i]);
+			else
+				ft_putendl(env[i]);
+		}
 	}
 	free(flags);
-	return (1);
+	return (true);
 }
 
-int         builtin_env_extra_unset(char *env[], char **av, char *flags)
+int			builtin_env_extra_unset(char *env[], char **av, char *flags)
 {
 	int		i;
 
@@ -151,23 +158,22 @@ int         builtin_env_extra_unset(char *env[], char **av, char *flags)
 				;
 		}
 	}
-	return (1);
+	return (true);
 }
 
 /*
- * [builtin_setenv description]
- *
- * @param  env [an array of key pair vaule]
- * @param  key      [the key to set]
- * @param  value     [the value to set]
- * @param  overwrite [== 0 ? and the value is set then the valus will beunchange
- *  else the value is overwrite]
- * @return           [if the key dont exist the create else overwrite it if the
- * overwrite is != 0]
- */
+** [builtin_setenv description]
+**
+** @param  env [an array of key pair vaule]
+** @param  key      [the key to set]
+** @param  value     [the value to set]
+** @param  overwrite [== 0 ? and the value is set then the valus will beunchange
+**  else the value is overwrite]
+** @return           [if the key dont exist the create else overwrite it if the
+** overwrite is != 0]
+*/
 
-int         builtin_setenv(char *env[], char *key, char *value,
-	int overwrite)
+int			builtin_setenv(char *env[], char *key, char *value, int overwrite)
 {
 	int		i;
 
@@ -183,7 +189,7 @@ int         builtin_setenv(char *env[], char *key, char *value,
 					env[i] = ft_strjoin(key, "=");
 					env[i] = ft_strjoin(env[i], value);
 				}
-				return (1);
+				return (true);
 			}
 		}
 	}
@@ -191,26 +197,26 @@ int         builtin_setenv(char *env[], char *key, char *value,
 	env[i] = ft_strjoin(key, "=");
 	if (value)
 		env[i] = ft_strjoin(env[i], value);
-	return (1);
+	return (true);
 }
 
 /*
- * Deletes the variable name and value from the environment.
- *
- * @param  name [description]
- * @return      [return 1 on sucess an 0 on error]
- *
- * @@todo   look for empty env
- */
+** Deletes the variable name and value from the environment.
+**
+** @param  name [description]
+** @return      [return 1 on sucess an 0 on error]
+**
+** @todo   look for empty env
+*/
 
-int         builtin_unsetenv(char *env[], char *name)
+int			builtin_unsetenv(char *env[], char *name)
 {
 	int		i;
 	int		j;
 
 	i = -1;
 	if (!name)
-		return (set_errors(-2, "setenv", "NAME"));
+		return (set_errors(-2, "unsetenv", "NAME"));
 	while (env[++i])
 	{
 		j = ft_strlen(name);
@@ -223,7 +229,7 @@ int         builtin_unsetenv(char *env[], char *name)
 						env[i - 1] = env[i];
 				if (env[--i])
 					env[i] = NULL;
-				return (1);
+				return (true);
 			}
 		}
 	}

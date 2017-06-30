@@ -1,18 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/06/30 15:49:46 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/06/30 15:49:47 by kacoulib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include "fakelib.c" // to remove
 #include "src/settings.c" // to remove
 #include "src/builtins.c" // to remove
 #include "src/tools.c" // to remove
 
-
 /*
-* Check if the command is an builtin. If then, execute it
-*
-* @param	{ command } The name of the command that should be check
-* @param	{ av }
-* @param	{ env }
-*
-* @return	NULL if no path found. Otherwize return the path
+** Check if the command is an builtin. If then, execute it
+**
+** @param	{ command } The name of the command that should be check
+** @param	{ av }
+** @param	{ env }
+**
+** @return	NULL if no path found. Otherwize return the path
 */
 
 int			is_bultin(char *command, char **av, char *env[])
@@ -25,7 +36,7 @@ int			is_bultin(char *command, char **av, char *env[])
 	if (ft_strcmp(command, "env") == 0)
 		r = builtin_env(env, av);
 	if (r)
-	{	
+	{
 		if (ft_strcmp(command, "cd") == 0)
 			builtin_cd(av, env);
 		else if (ft_strcmp(command, "echo") == 0)
@@ -42,13 +53,13 @@ int			is_bultin(char *command, char **av, char *env[])
 		else
 			return (r == 1 ? r : 0);
 	}
-	return (1);
+	return (true);
 }
 
 /*
-* Get the executable path from env path
-*
-* @return	NULL if no path found. Otherwise the path is returned
+** Get the executable path from env path
+**
+** @return	NULL if no path found. Otherwise the path is returned
 */
 
 char		*get_exeutable_path(char *command, char *env[])
@@ -62,8 +73,9 @@ char		*get_exeutable_path(char *command, char *env[])
 		return (NULL);
 	else if (access(command, F_OK & X_OK) != -1)
 		return (command);
-	else if (command[0] == '.' && command[1] == '/' &&
-		(ft_print("misihell: no such file or directory: ", command, NULL, NULL)))
+	else if (command[0] == '.' && command[1] == '/'
+		&& (ft_print("misihell: no such file or directory: ",
+			command, NULL, NULL)))
 		return (NULL);
 	*env_path = ft_strsub(*env_path, 5, ft_strlen(*env_path));
 	env_path = ft_strsplit(*env_path, ':');
@@ -85,11 +97,10 @@ int			launch(char *command, char **av, char *env[])
 	char	**builtin_args;
 
 	if (ft_strcmp(command, "exit") == 0)
-		builtin_exit(1);
+		builtin_exit(true);
 	cpid = fork();
 	if (cpid == -1)
 		printf("Error fork not valid pid\n");
-
 	else if (cpid == 0)
 	{
 		builtin_args = av[1] ? &av[1] : NULL;
@@ -98,32 +109,39 @@ int			launch(char *command, char **av, char *env[])
 			if ((command_path = get_exeutable_path(command, env)))
 				execve(command_path, av, env);
 			else
-				ft_print("misihell: no such file or directory: ",
-					command, NULL, NULL);
+				ft_print("\033[1;31mMisihell: command\033[0m ", command,
+					" \033[1;31mnot found\033[0m", NULL);
 		}
+		builtin_exit(true);
 	}
 	else
 		wait(&cpid);
-	return (1);
+	return (true);
 }
 
 int			main(int ac, char *av[], char *env[])
 {
 	int		i;
 	char	*tmp;
+	char	**commands;
 	char	**args;
-	char	buff[100];
+	char	buff[PATH_MAX];
 
-	ft_putstr("$> ");
-	while (read(0, buff, 255) > 0)
+	ft_putstr("\033[1;36m$> \033[0m");
+	while (read(0, buff, PATH_MAX) > 0)
 	{
 		if ((i = ft_indexof(buff, '\n')) > -1)
 		{
 			tmp = ft_strsub(buff, 0, i);
-			args = ft_strsplit(tmp, ' ');
-			tmp = args[0] ? args[0] : ft_strtrim(buff);
-			if (launch(tmp, args, env) && free_arr(args))
-				ft_putstr("\n$> ");
+			commands = ft_strsplit(tmp, ';');
+			i = -1;
+			while (commands[++i])
+			{
+				args = ft_strsplit(commands[i], ' ');
+				tmp = args[0] ? args[0] : ft_strtrim(buff);
+				launch(tmp, args, env) && free_arr(args);
+			}
+			ft_putstr("\033[1;36m$> \033[0m");
 		}
 	}
 	return (ac && av);

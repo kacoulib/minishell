@@ -1,11 +1,25 @@
-#ifndef MINISHELL
-#define MINISHELL
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/06/30 15:46:01 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/06/30 15:46:03 by kacoulib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef	MINISHELL
+#define	MINISHELL
 
 # include "lib/libft/libft.h"
 # include <unistd.h>
 # include <stdio.h> // to remove
 
-int			PATH_MAX = 256;
+#define		PATH_MAX 255
+#define		true 1
+#define		false 0
 
 int			builtin_cd(char **av, char *env[]);
 int			builtin_echo(char **av);
@@ -16,13 +30,8 @@ int			builtin_exit(int status);
 int			builtin_setenv(char *env[], char *key, char *value, int overwrite);
 int			builtin_unsetenv(char *env[], char *name);
 int			launch(char *command, char **av, char *env[]);
-int         set_errors(int id, char *command, char *name);
-int         special_char_extra(char c);
-int         special_char(char *str);
-
-
-
-// size_t		ft_strlen(const char *str);
-// char		*ft_strjoin(char const *s1, char const *s2);
+int			set_errors(int id, char *command, char *name);
+int			special_char_extra(char c);
+int			special_char(char *str);
 
 #endif
