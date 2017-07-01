@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "fakelib.c" // to remove
 #include "src/settings.c" // to remove
+#include "src/settings2.c" // to remove
 #include "src/builtins.c" // to remove
 #include "src/tools.c" // to remove
 
@@ -26,11 +27,9 @@
 ** @return	NULL if no path found. Otherwize return the path
 */
 
-int			is_bultin(char *command, char **av, char *env[])
+int			is_bultin(char *command, char **av, t_list *env)
 {
-	char	*key_val[2];
 	int		r;
-	int		overwrite;
 
 	r = 2;
 	if (ft_strcmp(command, "env") == 0)
@@ -38,18 +37,13 @@ int			is_bultin(char *command, char **av, char *env[])
 	if (r)
 	{
 		if (ft_strcmp(command, "cd") == 0)
-			builtin_cd(av, env);
+			builtin_cd(env, av);
 		else if (ft_strcmp(command, "echo") == 0)
 			builtin_echo(av);
 		else if (ft_strcmp(command, "setenv") == 0)
-		{
-			key_val[0] = av[0] ? av[0] : NULL;
-			key_val[1] = av[1] ? av[1] : NULL;
-			overwrite = av[2] ? ft_atoi(av[4]) : 0;
-			builtin_setenv(env, key_val[0], key_val[1], overwrite);
-		}
+			builtin_setenv(env, av);
 		else if (ft_strcmp(command, "unsetenv") == 0)
-			builtin_unsetenv(env, av[0]);
+			builtin_unsetenv(env, av);
 		else
 			return (r == 1 ? r : 0);
 	}
@@ -62,14 +56,14 @@ int			is_bultin(char *command, char **av, char *env[])
 ** @return	NULL if no path found. Otherwise the path is returned
 */
 
-char		*get_exeutable_path(char *command, char *env[])
+char		*get_exeutable_path(char *command, t_list *env)
 {
 	int		i;
 	char	**env_path;
 	char	*tmp;
 
 	env_path = (char **)ft_memalloc(sizeof(char));
-	if (!(*env_path = ft_getenv(env, "PATH=")))
+	if (!(*env_path = ft_getenv(env, "PATH")))
 		return (NULL);
 	else if (access(command, F_OK & X_OK) != -1)
 		return (command);
@@ -90,7 +84,7 @@ char		*get_exeutable_path(char *command, char *env[])
 	return (NULL);
 }
 
-int			launch(char *command, char **av, char *env[])
+int			launch(char *command, char **av, t_list *env)
 {
 	pid_t	cpid;
 	char	*command_path;
@@ -107,7 +101,7 @@ int			launch(char *command, char **av, char *env[])
 		if (!is_bultin(command, &av[1], env))
 		{
 			if ((command_path = get_exeutable_path(command, env)))
-				execve(command_path, av, env);
+				execve(command_path, av, convert_list_to_array(env));
 			else
 				ft_print("\033[1;31mMisihell: command\033[0m ", command,
 					" \033[1;31mnot found\033[0m", NULL);
@@ -119,14 +113,16 @@ int			launch(char *command, char **av, char *env[])
 	return (true);
 }
 
-int			main(int ac, char *av[], char *env[])
+int			main(int ac, char *av[], char *envp[])
 {
 	int		i;
 	char	*tmp;
 	char	**commands;
 	char	**args;
 	char	buff[PATH_MAX];
+	t_list	*env;
 
+	env = copy_env(envp);
 	ft_putstr("\033[1;36m$> \033[0m");
 	while (read(0, buff, PATH_MAX) > 0)
 	{

@@ -158,6 +158,14 @@ void		*ft_memset(void *b, int c, size_t len)
 }
 
 
+void	ft_lstdelone(t_list **alst, void (*del)(void *, size_t))
+{
+	del((*alst)->content, (*alst)->content_size);
+	free(*alst);
+	*alst = NULL;
+}
+
+
 void		*ft_memalloc(size_t size)
 {
 	void	*r;
@@ -379,3 +387,57 @@ char	*ft_strcpy(char *s1, const char *s2)
 	s1[i] = '\0';
 	return (s1);
 }
+
+void		ft_lstadd(t_list **alst, t_list *new)
+{
+	t_list	*tmp;
+
+	tmp = *alst;
+	*alst = new;
+	new->next = tmp;
+}
+
+t_list		*ft_lstnew(void const *content, size_t content_size)
+{
+	t_list	*new;
+
+	new = (t_list *)malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+	if (!content)
+	{
+		new->content = NULL;
+		new->content_size = 0;
+	}
+	else
+	{
+		new->content = (void *)malloc(content_size);
+		if (!new->content)
+			return (NULL);
+		new->content = ft_memcpy(new->content, content, content_size);
+		new->content_size = content_size;
+	}
+	new->next = NULL;
+	return (new);
+}
+
+void		*ft_memcpy(void *s1, const void *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n)
+	{
+		((char *)s1)[i] = ((char *)s2)[i];
+		i++;
+	}
+	return (s1);
+}
+
+void	ft_lstpush(t_list *list, t_list *new)
+{
+	while (list->next)
+		list = list->next;
+	list->next = new;
+}
+

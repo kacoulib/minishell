@@ -13,6 +13,32 @@
 #include "../minishell.h"
 
 /*
+** Get the list that contain the env key
+**
+** @param  { env }   An array of key pair vaule
+** @param  { key }   The key that should be find in the env
+**
+** @return [return NULL if the key don't exist OR the key and value]
+*/
+
+t_list		*ft_getenv_from_list(t_list *env, char *key)
+{
+	t_list	*tmp;
+	int		i;
+
+	i = -1;
+	tmp = env;
+	while (tmp)
+	{
+		if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
+			if (((char *)tmp->content)[ft_strlen(key)] == '=')
+				return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+/*
 ** Get the key and value from the enviroment path depennding on a key
 **
 ** @param  { env }   An array of key pair vaule
@@ -21,16 +47,12 @@
 ** @return [return NULL if the key don't exist OR the key and value]
 */
 
-char		*ft_getenv(char *env[], char *key)
+char		*ft_getenv(t_list *env, char *key)
 {
-	int		i;
+	t_list *tmp;
 
-	i = -1;
-	while (env[++i])
-		if (ft_strncmp(env[i], key, ft_strlen(key)) == 0)
-			if (ft_indexof(key, '=') > -1)
-				return (env[i]);
-	return (NULL);
+	tmp = ft_getenv_from_list(env, key);
+	return (tmp ? tmp->content : NULL);
 }
 
 /*
@@ -43,7 +65,7 @@ char		*ft_getenv(char *env[], char *key)
 ** @return     [return 1 on success otherwise return 0]
 */
 
-int			swap_env(char *env[], char *s1, char *s2)
+int			swap_env(t_list *env, char *s1, char *s2)
 {
 	int		i;
 	char	*old;
@@ -57,12 +79,13 @@ int			swap_env(char *env[], char *s1, char *s2)
 	r1 = ft_strsplit(new, '=');
 	r2 = ft_strsplit(old, '=');
 	i = -1;
-	while (env[++i])
+	while (env)
 	{
-		if (ft_strncmp(env[i], s1, ft_strlen(s1)) == 0)
-			env[i] = ft_strjoin(s1, r2[1]);
-		else if (ft_strncmp(env[i], s2, ft_strlen(s2)) == 0)
-			env[i] = ft_strjoin(s2, r1[1]);
+		if (ft_strncmp(env->content, s1, ft_strlen(s1)) == 0)
+			env->content = ft_strjoin(s1, r2[1]);
+		else if (ft_strncmp(env->content, s2, ft_strlen(s2)) == 0)
+			env->content = ft_strjoin(s2, r1[1]);
+		env = env->next;
 	}
 	return (true);
 }

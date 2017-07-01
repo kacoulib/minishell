@@ -22,7 +22,7 @@
 ** @return     [if sucess return 1 else print error and return 0]
 */
 
-int			builtin_cd(char **av, char *env[])
+int			builtin_cd(t_list *env, char **av)
 {
 	int		error_id;
 	char	*path;
@@ -32,23 +32,23 @@ int			builtin_cd(char **av, char *env[])
 	{
 		if (ft_strcmp(av[0], "-") == 0)
 		{
-			if (swap_env(env, "OLDPWD=", "_="))
+			if (swap_env(env, "OLDPWD", "_"))
 				error_id = 2;
-			path = ft_strsplit(ft_getenv(env, "_="), '=')[1];
+			path = ft_strsplit(ft_getenv(env, "_"), '=')[1];
 		}
 		else
 			path = av[0];
 	}
 	else
 	{
-		path = ft_strsplit(ft_getenv(env, "HOME="), '=')[1];
-		builtin_setenv(env, "_=", path, 1);
+		path = ft_strsplit(ft_getenv(env, "HOME"), '=')[1];
+		builtin_setenv(env, av);
 	}
 	if (!path)
 		return (set_errors(error_id, NULL, NULL));
 	if (chdir(path) < 0 && (error_id = 0))
 		set_errors(error_id, NULL, path);
-	ft_print(ft_strsplit(ft_getenv(env, "PWD="), '=')[1], ":", NULL, NULL);
+	ft_print(ft_strsplit(ft_getenv(env, "PWD"), '=')[1], ":", NULL, NULL);
 	return (true);
 }
 
@@ -93,7 +93,7 @@ int			builtin_exit(int status)
 ** @return	[1 if another command has to be execute otherwise return 0]
 */
 
-int			builtin_env(char *env[], char **av)
+int			builtin_env(t_list *env, char **av)
 {
 	int		show_env;
 	char	*flags[2];
@@ -115,14 +115,14 @@ int			builtin_env(char *env[], char **av)
 			ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
 		else if ((ft_strstr(flags[1], " --ignore-environment ") ||
 			ft_strstr(flags[1], " i ")) && (show_env = 0))
-			env[0] = NULL;
+			env = NULL;
 	}
 	if (show_env)
 		builtin_env_extra(env, av, flags[1]);
 	return (0);
 }
 
-int			builtin_env_extra(char *env[], char **av, char *flags)
+int			builtin_env_extra(t_list *env, char **av, char *flags)
 {
 	int		i;
 
@@ -131,21 +131,22 @@ int			builtin_env_extra(char *env[], char **av, char *flags)
 	// printf("____%s, %s, %s\n", flags, av[0], env[0]);
 	if (av)
 		;
-	while (env[++i])
+	while (env)
 	{
-		if (ft_strcmp(env[i], "") != 0)
+		if (ft_strcmp(env->content, "") != 0)
 		{
 			if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
-				ft_putstr(env[i]);
+				ft_putstr(env->content);
 			else
-				ft_putendl(env[i]);
+				ft_putendl(env->content);
 		}
+		env = env->next;
 	}
 	free(flags);
 	return (true);
 }
 
-int			builtin_env_extra_unset(char *env[], char **av, char *flags)
+int			builtin_env_extra_unset(t_list *env, char **av, char *flags)
 {
 	int		i;
 
@@ -165,39 +166,36 @@ int			builtin_env_extra_unset(char *env[], char **av, char *flags)
 ** [builtin_setenv description]
 **
 ** @param  env [an array of key pair vaule]
-** @param  key      [the key to set]
-** @param  value     [the value to set]
-** @param  overwrite [== 0 ? and the value is set then the valus will beunchange
-**  else the value is overwrite]
+** @param  av     [the arguments]
 ** @return           [if the key dont exist the create else overwrite it if the
 ** overwrite is != 0]
 */
 
-int			builtin_setenv(char *env[], char *key, char *value, int overwrite)
+int		builtin_setenv(t_list *env, char **av)
 {
-	int		i;
+	char	*tmp;
+	char	*key;
+	char	*val;
+	t_list	*new;
 
-	i = -1;
-	if (key && ft_strcmp(key, "") != 0)
+	if (!av || !av[0])
+		return (builtin_env(env, av));
+	new = ft_getenv_from_list(env, av[0]);
+	key = ft_strdup(av[0]);
+	val = ft_strdup(av[1] ? av[1] : "");
+	tmp = ft_strjoin(key, ft_strjoin("=", (val ? val : "")));
+	new = ft_lstnew(tmp, ft_strlen(tmp) + 1);
+	if (!env)
+		env = copy_env(&tmp);//TODO
+	else
+		ft_lstpush(env, new);
+
+	while (env)
 	{
-		while (env[++i])
-		{
-			if (ft_strncmp(env[i], key, ft_strlen(key)) == 0)
-			{
-				if (value && overwrite)
-				{
-					env[i] = ft_strjoin(key, "=");
-					env[i] = ft_strjoin(env[i], value);
-				}
-				return (true);
-			}
-		}
+		printf("%s\n", env->content);
+		env = env->next;
 	}
-	key = (key) ? key : "";
-	env[i] = ft_strjoin(key, "=");
-	if (value)
-		env[i] = ft_strjoin(env[i], value);
-	return (true);
+	return (1);
 }
 
 /*
@@ -209,29 +207,69 @@ int			builtin_setenv(char *env[], char *key, char *value, int overwrite)
 ** @todo   look for empty env
 */
 
-int			builtin_unsetenv(char *env[], char *name)
+int			builtin_unsetenv(t_list *env, char **av)
 {
 	int		i;
-	int		j;
+	t_list	*tmp;
+	t_list	*prev;
 
-	i = -1;
-	if (!name)
+	if ((!av || !av[0]) || !(tmp = env))
 		return (set_errors(-2, "unsetenv", "NAME"));
-	while (env[++i])
+	i = ft_strlen(av[0]);
+	prev = NULL;
+	while (tmp)
 	{
-		j = ft_strlen(name);
-		if (ft_strncmp(env[i], name, j) == 0)
+		if (ft_strncmp(tmp->content, av[0], i) == 0)
 		{
-			if (env[i][j] == '=')
+			if (((char *)tmp->content)[i] == '=')
 			{
-				while (env[++i])
-					if (env[i - 1])
-						env[i - 1] = env[i];
-				if (env[--i])
-					env[i] = NULL;
-				return (true);
+				if (!prev && (env = env->next))
+					prev = tmp->next;
+				else
+					prev->next = tmp->next;
+				free(tmp);
+				tmp = prev;
 			}
 		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+	return (builtin_unsetenv_extra(env));
+}
+
+int			builtin_unsetenv_extra(t_list *env)
+{
+	
+	while (env)
+	{
+		printf("%s\n", env->content);
+		env = env->next;	
 	}
 	return (0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
