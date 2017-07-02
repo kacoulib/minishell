@@ -22,7 +22,7 @@
 ** @return     [if sucess return 1 else print error and return 0]
 */
 
-int			builtin_cd(t_list *env, char **av)
+int			builtin_cd(t_list **env, char **av)
 {
 	int		error_id;
 	char	*path;
@@ -93,72 +93,73 @@ int			builtin_exit(int status)
 ** @return	[1 if another command has to be execute otherwise return 0]
 */
 
-int			builtin_env(t_list *env, char **av)
+int			builtin_env(t_list **env, char **av)
 {
 	int		show_env;
 	char	*flags[2];
 
 	show_env = 1;
-	flags[0] = ft_strdup(" i u --ignore-environment --null --unset --help --version ");
-	flags[1] = get_glags(flags[0], av, "env");
-	if (flags[1])
+	flags[0] = ft_strdup(" i u - --ignore-environment --null --unset --help --version ");
+	if (!(flags[1] = get_glags(flags[0], av, "env")))
+		return (0);
+	if (ft_strstr(flags[1], " --help ") && (show_env = 0))
 	{
-		if (ft_strstr(flags[1], " --help ") && (show_env = 0))
-		{
-			ft_putendl("Usage: please type man help for more information\n");
-			ft_putendl("The options are:\n");
-			ft_putendl("-i, --ignore-environment, -0, -u\n");
-		}
-		else if (ft_strstr(flags[1], " -i "))
-			show_env = 0;
-		else if (ft_strstr(flags[1], " --version ") && (show_env = 0))
-			ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
-		else if ((ft_strstr(flags[1], " --ignore-environment ") ||
-			ft_strstr(flags[1], " i ")) && (show_env = 0))
-			env = NULL;
+		ft_putendl("Usage: please type man help for more information\n");
+		ft_putendl("The options are:\n");
+		ft_putendl("-i, --ignore-environment, -0, -u\n");
 	}
-	if (show_env)
-		builtin_env_extra(env, av, flags[1]);
+	else if (ft_strstr(flags[1], " -i "))
+		show_env = 0;
+	else if (ft_strstr(flags[1], " --version ") && (show_env = 0))
+		ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
+	else if ((ft_strstr(flags[1], " --ignore-environment ") ||
+		ft_strstr(flags[1], " i ")) && !(show_env = 0))
+		ft_lstdel(env, del);
+	if (builtin_env_extra(env, av) && show_env)
+		print_env(env, flags[1]);
 	return (0);
 }
 
-int			builtin_env_extra(t_list *env, char **av, char *flags)
+int			builtin_env_extra(t_list **env, char **av)
 {
 	int		i;
+	char	**tmp;
 
-	i = -1;
-	// if (ft_strstr(flags, " --help "))
-	// printf("____%s, %s, %s\n", flags, av[0], env[0]);
-	if (av)
-		;
-	while (env)
+	i = get_args_limit(av) - 1;
+	while (av[++i])
 	{
-		if (ft_strcmp(env->content, "") != 0)
+		if (ft_indexof(av[i], '=') > 0)
 		{
-			if (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null "))
-				ft_putstr(env->content);
-			else
-				ft_putendl(env->content);
+			tmp = ft_strsplit(av[i], '=');
+			builtin_setenv(env, tmp);
+			free_arr(tmp);
 		}
-		env = env->next;
 	}
-	free(flags);
-	return (true);
+	return (1);
 }
 
-int			builtin_env_extra_unset(t_list *env, char **av, char *flags)
+int			print_env(t_list **env, char *flags)
 {
 	int		i;
+	t_list	*tmp;
 
 	i = -1;
-	while (av[++i] && av[i][0] == '-' && av[i][1])
+	if (!*env)
+		return (0);
+	tmp = *env;
+	while (tmp)
 	{
-		if (ft_strstr(av[i], "--ignore-environment=") || ft_strstr(av[i], "-u="))
+		if (ft_strcmp(tmp->content, "") != 0)
 		{
-			if (flags || env) // to remove
-				;
+			if (flags && (ft_strstr(flags, " 0 ") || ft_strstr(flags, " --null ")))
+				ft_putstr(tmp->content);
+			else
+				ft_putendl(tmp->content);
 		}
+		tmp = tmp->next;
 	}
+	if (flags)
+		free(flags);
 	return (true);
 }
 
@@ -171,29 +172,28 @@ int			builtin_env_extra_unset(t_list *env, char **av, char *flags)
 ** overwrite is != 0]
 */
 
-int		builtin_setenv(t_list *env, char **av)
+int		builtin_setenv(t_list **env, char **av)
 {
 	char	*tmp;
-	char	*key;
-	char	*val;
 	t_list	*new;
 
 	if (!av || !av[0])
-		return (builtin_env(env, av));
+		return (print_env(env, NULL));
 	new = ft_getenv_from_list(env, av[0]);
-	key = ft_strdup(av[0]);
-	val = ft_strdup(av[1] ? av[1] : "");
-	tmp = ft_strjoin(key, ft_strjoin("=", (val ? val : "")));
-	new = ft_lstnew(tmp, ft_strlen(tmp) + 1);
-	if (!env)
-		env = copy_env(&tmp);//TODO
-	else
-		ft_lstpush(env, new);
-
-	while (env)
+	tmp = ft_strjoin(av[0], "=");
+	if (av[1])
+		tmp = ft_strjoin(tmp, av[1]);
+	if (new)
 	{
-		printf("%s\n", env->content);
-		env = env->next;
+		free(new->content);
+		new->content = tmp;
+	}
+	else
+	{
+		if (!*env)
+			*env = ft_lstnew(tmp, ft_strlen(tmp) + 1);
+		else
+			ft_lstpush(*env, ft_lstnew(tmp, ft_strlen(tmp) + 1));
 	}
 	return (1);
 }
@@ -207,15 +207,16 @@ int		builtin_setenv(t_list *env, char **av)
 ** @todo   look for empty env
 */
 
-int			builtin_unsetenv(t_list *env, char **av)
+int			builtin_unsetenv(t_list **env, char **av)
 {
 	int		i;
 	t_list	*tmp;
 	t_list	*prev;
 
-	if ((!av || !av[0]) || !(tmp = env))
+	if ((!av || !av[0]))
 		return (set_errors(-2, "unsetenv", "NAME"));
 	i = ft_strlen(av[0]);
+	tmp = *env;
 	prev = NULL;
 	while (tmp)
 	{
@@ -223,7 +224,7 @@ int			builtin_unsetenv(t_list *env, char **av)
 		{
 			if (((char *)tmp->content)[i] == '=')
 			{
-				if (!prev && (env = env->next))
+				if (!prev && (*env = (*env)->next))
 					prev = tmp->next;
 				else
 					prev->next = tmp->next;
@@ -234,17 +235,17 @@ int			builtin_unsetenv(t_list *env, char **av)
 		prev = tmp;
 		tmp = tmp->next;
 	}
-	return (builtin_unsetenv_extra(env));
+	return (builtin_unsetenv_extra(env, av));
 }
 
-int			builtin_unsetenv_extra(t_list *env)
+int			builtin_unsetenv_extra(t_list **env, char **av)
 {
-	
-	while (env)
-	{
-		printf("%s\n", env->content);
-		env = env->next;	
-	}
+	char	*tmp;
+
+	if (!(tmp = av[0] ? ft_strtrim(av[0]) : NULL))
+		return (0);
+	if (ft_strstr(tmp, "*"))
+		ft_lstdel(env, del);
 	return (0);
 }
 

@@ -441,3 +441,15 @@ void	ft_lstpush(t_list *list, t_list *new)
 	list->next = new;
 }
 
+void		ft_lstdel(t_list **alts, void (*del)(void *, size_t))
+{
+	t_list	*next;
+
+	while (*alts)
+	{
+		next = (*alts)->next;
+		ft_lstdelone(alts, del);
+		*alts = next;
+	}
+}
+

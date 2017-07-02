@@ -7,9 +7,10 @@ t_list		*copy_env(char *env[])
 	t_list	*r;
 
 	if (!env[0])
-		return (NULL);
-	i = 0;
+		return (ft_lstnew(NULL, sizeof(t_list) + 1));
 	r = ft_lstnew(env[0], ft_strlen(env[0]) + 1);
+
+	i = 0;
 	while (env[++i])
 	{
 		tmp = ft_lstnew(env[i], ft_strlen(env[i]) + 1);
@@ -45,4 +46,12 @@ char		**convert_list_to_array(t_list *list)
 		i++;
 	}
 	return (r);
+}
+
+void	del(void *content, size_t len)
+{
+	if (content)
+		free(content);
+	if (len)
+		;
 }

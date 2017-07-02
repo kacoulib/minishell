@@ -21,13 +21,13 @@
 ** @return [return NULL if the key don't exist OR the key and value]
 */
 
-t_list		*ft_getenv_from_list(t_list *env, char *key)
+t_list		*ft_getenv_from_list(t_list **env, char *key)
 {
 	t_list	*tmp;
 	int		i;
 
 	i = -1;
-	tmp = env;
+	tmp = *env;
 	while (tmp)
 	{
 		if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
@@ -47,7 +47,7 @@ t_list		*ft_getenv_from_list(t_list *env, char *key)
 ** @return [return NULL if the key don't exist OR the key and value]
 */
 
-char		*ft_getenv(t_list *env, char *key)
+char		*ft_getenv(t_list **env, char *key)
 {
 	t_list *tmp;
 
@@ -65,7 +65,7 @@ char		*ft_getenv(t_list *env, char *key)
 ** @return     [return 1 on success otherwise return 0]
 */
 
-int			swap_env(t_list *env, char *s1, char *s2)
+int			swap_env(t_list **env, char *s1, char *s2)
 {
 	int		i;
 	char	*old;
@@ -81,11 +81,11 @@ int			swap_env(t_list *env, char *s1, char *s2)
 	i = -1;
 	while (env)
 	{
-		if (ft_strncmp(env->content, s1, ft_strlen(s1)) == 0)
-			env->content = ft_strjoin(s1, r2[1]);
-		else if (ft_strncmp(env->content, s2, ft_strlen(s2)) == 0)
-			env->content = ft_strjoin(s2, r1[1]);
-		env = env->next;
+		if (ft_strncmp((*env)->content, s1, ft_strlen(s1)) == 0)
+			(*env)->content = ft_strjoin(s1, r2[1]);
+		else if (ft_strncmp((*env)->content, s2, ft_strlen(s2)) == 0)
+			(*env)->content = ft_strjoin(s2, r1[1]);
+		*env = (*env)->next;
 	}
 	return (true);
 }
@@ -213,24 +213,44 @@ char		*get_glags(char *except_flags, char **av, char *command)
 
 int			set_errors(int id, char *command, char *name)
 {
-	if (id == -2)
-	{
-		ft_putstr("Minishel: ");
-		ft_print(command, " << ", name, " >> not defined\n");
-	}
-	if (id == -1)
+	ft_putstr("\033[1;31mMisihell: ");
+	if (id == -3)
+		ft_print("command\033[0m ", command, " \033[1;31mnot found", NULL);
+	else if (id == -2)
+		ft_print(command, " \033[0m<< ", name, " >>\033[1;31m not defined\n");
+	else if (id == -1)
 		printf("cd error no path to home\n");
-	if (id == 0)
+	else if (id == 0)
 		ft_print("minishel: cd: ", name, ":  No such file or directory", NULL);
-	if (id == 1 && ft_strcmp(command, "echo") != 0)
+	else if (id == 1 && ft_strcmp(command, "echo") != 0)
 		ft_print(command, ": unrecognized option '", name,
 			"'\n Try 'command --help' for more information.");
-	if (id == 3)
+	else if (id == 3)
 		ft_putstr("name is NULL, points to a string of length 0, or contains an '=' character.");
-	if (id == 4)
-	{
-		ft_print("minishel: ", command, ": to many args.", NULL);
-		ft_putstr("See --help for more information.");
-	}
+	else if (id == 4)
+		ft_print(command, ": to many args.", "See --help for more information.", NULL);
+	ft_putstr("\033[0m");
 	return (false);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

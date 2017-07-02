@@ -27,7 +27,7 @@
 ** @return	NULL if no path found. Otherwize return the path
 */
 
-int			is_bultin(char *command, char **av, t_list *env)
+int			is_bultin(char *command, char **av, t_list **env)
 {
 	int		r;
 
@@ -44,6 +44,8 @@ int			is_bultin(char *command, char **av, t_list *env)
 			builtin_setenv(env, av);
 		else if (ft_strcmp(command, "unsetenv") == 0)
 			builtin_unsetenv(env, av);
+		else if (ft_strcmp(command, "exit") == 0)
+			builtin_exit(true);
 		else
 			return (r == 1 ? r : 0);
 	}
@@ -56,7 +58,7 @@ int			is_bultin(char *command, char **av, t_list *env)
 ** @return	NULL if no path found. Otherwise the path is returned
 */
 
-char		*get_exeutable_path(char *command, t_list *env)
+char		*get_exeutable_path(char *command, t_list **env)
 {
 	int		i;
 	char	**env_path;
@@ -84,28 +86,22 @@ char		*get_exeutable_path(char *command, t_list *env)
 	return (NULL);
 }
 
-int			launch(char *command, char **av, t_list *env)
+int			launch(char *command, char **av, t_list **env)
 {
 	pid_t	cpid;
 	char	*command_path;
-	char	**builtin_args;
 
-	if (ft_strcmp(command, "exit") == 0)
-		builtin_exit(true);
+	if (is_bultin(command, &av[1], env))
+		return (true);
 	cpid = fork();
 	if (cpid == -1)
 		printf("Error fork not valid pid\n");
 	else if (cpid == 0)
 	{
-		builtin_args = av[1] ? &av[1] : NULL;
-		if (!is_bultin(command, &av[1], env))
-		{
-			if ((command_path = get_exeutable_path(command, env)))
-				execve(command_path, av, convert_list_to_array(env));
-			else
-				ft_print("\033[1;31mMisihell: command\033[0m ", command,
-					" \033[1;31mnot found\033[0m", NULL);
-		}
+		if ((command_path = get_exeutable_path(command, env)))
+			execve(command_path, av, convert_list_to_array(*env));
+		else
+			set_errors(-3, command, NULL);
 		builtin_exit(true);
 	}
 	else
@@ -135,7 +131,7 @@ int			main(int ac, char *av[], char *envp[])
 			{
 				args = ft_strsplit(commands[i], ' ');
 				tmp = args[0] ? args[0] : ft_strtrim(buff);
-				launch(tmp, args, env) && free_arr(args);
+				launch(tmp, args, &env) && free_arr(args);
 			}
 			ft_putstr("\033[1;36m$> \033[0m");
 		}
