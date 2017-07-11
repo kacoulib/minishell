@@ -48,7 +48,6 @@ int			builtin_cd(t_list **env, char **av)
 		return (set_errors(error_id, NULL, NULL));
 	if (chdir(path) < 0 && (error_id = 0))
 		set_errors(error_id, NULL, path);
-	ft_print(ft_strsplit(ft_getenv(env, "PWD"), '=')[1], ":", NULL, NULL);
 	return (true);
 }
 
