@@ -13,7 +13,7 @@
 #ifndef	MINISHELL
 #define	MINISHELL
 
-# include "lib/libft/libft.h"
+# include "../libft/libft.h"
 # include <unistd.h>
 # include <signal.h>
 # include <stdio.h> // to remove
@@ -34,8 +34,16 @@ int			builtin_unsetenv_extra(t_list **env, char **av);
 int			launch(char *command, char **av, t_list **env);
 int			print_env(t_list **env, char *flags);
 int			set_errors(int id, char *command, char *name);
-int			special_char_extra(char c);
 int			special_char(char *str);
+int			swap_env(t_list **env, char *s1, char *s2);
+char		*ft_getenv(t_list **env, char *key);
+char		*get_glags(char *except_flags, char **av, char *command);
+int			free_arr(char **arr);
+int			get_args_limit(char **av);
+t_list		*ft_getenv_from_list(t_list **env, char *key);
+void		del(void *content, size_t len);
+char		**convert_list_to_array(t_list *list);
+t_list		*copy_env(char *env[]);
 
 
 #endif

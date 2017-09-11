@@ -11,11 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "fakelib.c" // to remove
-#include "src/settings.c" // to remove
-#include "src/settings2.c" // to remove
-#include "src/builtins.c" // to remove
-#include "src/tools.c" // to remove
 
 /*
 ** Check if the command is an builtin. If then, execute it

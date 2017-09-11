@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
-int			special_char_extra(char c)
+static int		special_char_extra(char c)
 {
 	if (c == 'a')
 		putchar('\a');
@@ -33,9 +33,9 @@ int			special_char_extra(char c)
 	return (true);
 }
 
-int			special_char(char *str)
+int				special_char(char *str)
 {
-	int		i;
+	int			i;
 
 	i = -1;
 	while (str[++i])
