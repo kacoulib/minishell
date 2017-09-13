@@ -12,6 +12,37 @@
 
 #include "minishell.h"
 
+int			get_args_limit(char **av)
+{
+	int		i;
+
+	i = -1;
+	while (av[++i] && av[i][0] == '-' && av[i][1])
+		;
+	return (i);
+}
+
+int			free_arr(char **arr)
+{
+	int		i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	return (true);
+}
+
+int			index_of_array(char **arr, char *key)
+{
+	int i;
+
+	i = -1;
+	while (arr[++i])
+		if (ft_strcmp(arr[i], key) == 0)
+			return (i);
+	return (-1);
+}
+
 static int		special_char_extra(char c)
 {
 	if (c == 'a')
@@ -30,6 +61,7 @@ static int		special_char_extra(char c)
 		putchar('\v');
 	else if (c == '\\')
 		putchar('\\');
+	printf("--\n");
 	return (true);
 }
 

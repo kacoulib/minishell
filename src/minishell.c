@@ -12,6 +12,12 @@
 
 #include "minishell.h"
 
+static int			builtin_exit(int status)
+{
+	exit(status);
+	return (true);
+}
+
 /*
 ** Check if the command is an builtin. If then, execute it
 **
@@ -22,9 +28,9 @@
 ** @return	NULL if no path found. Otherwize return the path
 */
 
-int			is_bultin(char *command, char **av, t_list **env)
+int					is_bultin(char *command, char **av, t_list **env)
 {
-	int		r;
+	int				r;
 
 	r = 2;
 	if (ft_strcmp(command, "env") == 0)
@@ -53,11 +59,11 @@ int			is_bultin(char *command, char **av, t_list **env)
 ** @return	NULL if no path found. Otherwise the path is returned
 */
 
-char		*get_exeutable_path(char *command, t_list **env)
+char				*get_exeutable_path(char *command, t_list **env)
 {
-	int		i;
-	char	**env_path;
-	char	*tmp;
+	int				i;
+	char			**env_path;
+	char			*tmp;
 
 	env_path = (char **)ft_memalloc(sizeof(char));
 	if (!(*env_path = ft_getenv(env, "PATH")))
@@ -81,10 +87,10 @@ char		*get_exeutable_path(char *command, t_list **env)
 	return (NULL);
 }
 
-int			launch(char *command, char **av, t_list **env)
+int					launch(char *command, char **av, t_list **env)
 {
-	pid_t	cpid;
-	char	*command_path;
+	pid_t			cpid;
+	char			*command_path;
 
 	if (is_bultin(command, &av[1], env))
 		return (true);
@@ -104,14 +110,14 @@ int			launch(char *command, char **av, t_list **env)
 	return (true);
 }
 
-int			main(int ac, char *av[], char *envp[])
+int					main(int ac, char *av[], char *envp[])
 {
-	int		i;
-	char	*tmp;
-	char	**commands;
-	char	**args;
-	char	buff[PATH_MAX];
-	t_list	*env;
+	int				i;
+	char			*tmp;
+	char			**commands;
+	char			**args;
+	char			buff[PATH_MAX];
+	t_list			*env;
 
 	env = copy_env(envp);
 	ft_putstr("\033[1;36m$> \033[0m");

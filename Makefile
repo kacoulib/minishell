@@ -6,7 +6,7 @@
 #    By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/09/11 14:57:17 by kacoulib          #+#    #+#              #
-#    Updated: 2017/09/11 14:57:18 by kacoulib         ###   ########.fr        #
+#    Updated: 2017/09/12 20:54:56 by kacoulib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,12 @@ CC			=	gcc
 RM			=	rm -f
 CFLAGS		=	-Wall -Werror -Wextra
 LIB			=	-L./libft -lft -lncurses
-CPPFLAGS	=	-Iincludes
-SRCS		=	src/builtins.c \
+CPPFLAGS	=	-I header
+SRCS		=	src/builtin_0.c \
+				src/builtin_1.c \
 				src/tools.c \
+				src/init.c \
+				src/errors.c \
 				src/setting_0.c \
 				src/setting_1.c \
 				src/minishell.c

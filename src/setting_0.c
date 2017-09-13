@@ -90,37 +90,6 @@ int			swap_env(t_list **env, char *s1, char *s2)
 	return (true);
 }
 
-int			get_args_limit(char **av)
-{
-	int		i;
-
-	i = -1;
-	while (av[++i] && av[i][0] == '-' && av[i][1])
-		;
-	return (i);
-}
-
-int			free_arr(char **arr)
-{
-	int		i;
-
-	i = -1;
-	while (arr[++i])
-		free(arr[i]);
-	return (true);
-}
-
-int			index_of_array(char **arr, char *key)
-{
-	int i;
-
-	i = -1;
-	while (arr[++i])
-		if (ft_strcmp(arr[i], key) == 0)
-			return (i);
-	return (-1);
-}
-
 /*
 ** If the param is single dash
 ** e.g: -en
@@ -200,57 +169,3 @@ char		*get_glags(char *except_flags, char **av, char *command)
 	free_arr(flags);
 	return (ft_strjoin(r, " "));
 }
-
-/*
-** Display errors depennding on an id
-**
-** @param  { id }        The id for the error]
-** @param  { command }   The name of the command]
-** @param  { name }      The error name]
-**
-** @return      [return 0]
-*/
-
-int			set_errors(int id, char *command, char *name)
-{
-	ft_putstr("\033[1;31mMisihell: ");
-	if (id == -3)
-		ft_print("command\033[0m ", command, " \033[1;31mnot found", NULL);
-	else if (id == -2)
-		ft_print(command, " \033[0m<< ", name, " >>\033[1;31m not defined\n");
-	else if (id == -1)
-		printf("cd error no path to home\n");
-	else if (id == 0)
-		ft_print("minishel: cd: ", name, ":  No such file or directory", NULL);
-	else if (id == 1 && ft_strcmp(command, "echo") != 0)
-		ft_print(command, ": unrecognized option '", name,
-			"'\n Try 'command --help' for more information.");
-	else if (id == 3)
-		ft_putstr("name is NULL, points to a string of length 0, or contains an '=' character.");
-	else if (id == 4)
-		ft_print(command, ": to many args.", "See --help for more information.", NULL);
-	ft_putstr("\033[0m");
-	return (false);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
