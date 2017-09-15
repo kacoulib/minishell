@@ -18,6 +18,16 @@
 # include <signal.h>
 # include <stdio.h> // to remove
 
+typedef struct		s_flag_ctrl
+{
+	int				has_dash;
+	int				has_error;
+	int				step_back_on_error;
+	int				reset_after_error;
+	char			output[256];
+	struct s_list	*list;
+}					t_flag_ctrl;
+
 #define		PATH_MAX 255
 #define		true 1
 #define		false 0
@@ -45,6 +55,13 @@ void		del(void *content, size_t len);
 char		**convert_list_to_array(t_list *list);
 int			index_of_array(char **arr, char *key);
 char		*check_and_get_flag(char *builtin, char **av);
+t_list		*init_flags(char *flags);
+int			builtin_echo_args_limit(t_flag_ctrl *flag_ctr, char **av);
+// int			builtin_echo_args_limit(char **av, t_list *flag_list, char *flags,
+// 	int has_dash);
+t_flag_ctrl	*create_flag_ctrl(int has_dash, int has_error);
+int			check_path_access(char *command, char *path);
+char				*set_errors_r_char(int id, char *command, char *name);
 
 t_list		*copy_env(char *env[]);
 

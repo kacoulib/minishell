@@ -67,7 +67,7 @@ char				*get_exeutable_path(char *command, t_list **env)
 
 	env_path = (char **)ft_memalloc(sizeof(char));
 	if (!(*env_path = ft_getenv(env, "PATH")))
-		return (NULL);
+		return (set_errors_r_char(-3, command, NULL));
 	else if (access(command, F_OK & X_OK) != -1)
 		return (command);
 	else if (command[0] == '.' && command[1] == '/'
@@ -81,7 +81,7 @@ char				*get_exeutable_path(char *command, t_list **env)
 	{
 		tmp = ft_strjoin(env_path[i], "/");
 		tmp = ft_strjoin(tmp, command);
-		if (access(tmp, F_OK & X_OK) != -1)
+		if (!check_path_access(NULL, tmp))
 			return (tmp);
 	}
 	return (NULL);
@@ -101,8 +101,6 @@ int					launch(char *command, char **av, t_list **env)
 	{
 		if ((command_path = get_exeutable_path(command, env)))
 			execve(command_path, av, convert_list_to_array(*env));
-		else
-			set_errors(-3, command, NULL);
 		builtin_exit(true);
 	}
 	else

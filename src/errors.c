@@ -22,11 +22,17 @@
 ** @return      [return 0]
 */
 
-int			set_errors(int id, char *command, char *name)
+static int		set_errors_second(int id, char *command, char *name)
+{
+	if (id == 9)
+		ft_print("command\033[0m ", command, " \033[1;31mpermission denied: ", name);
+	return (false);
+}
+int				set_errors(int id, char *command, char *name)
 {
 	if (id != 1 || ft_strcmp(command, "echo") != 0)
 		ft_putstr("\033[1;31mMisihell: ");
-	printf("%d %s\n", id, command);
+	// printf("%d %s\n", id, command);
 	if (id == -3)
 		ft_print("command\033[0m ", command, " \033[1;31mnot found", NULL);
 	else if (id == -2)
@@ -43,5 +49,11 @@ int			set_errors(int id, char *command, char *name)
 	else if (id == 4)
 		ft_print(command, ": to many args.", "See --help for more information.", NULL);
 	ft_putstr("\033[0m");
-	return (false);
+	return (set_errors_second(id, command, name));
+}
+char				*set_errors_r_char(int id, char *command, char *name)
+{
+	if (!set_errors(id, command, name))
+		return (NULL);
+	return ("true");
 }

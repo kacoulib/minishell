@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+/*
+**	@param [command] The command that is checking the function.
+*/
+
+int			check_path_access(char *command, char *path)
+{
+
+	if (access(path, F_OK & X_OK) == -1)
+	{
+		set_errors(9, command, path);
+		return (0);
+	}
+	return (1);
+}
+
 int			get_args_limit(char **av)
 {
 	int		i;
