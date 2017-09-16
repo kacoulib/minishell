@@ -30,9 +30,13 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 	tmp = *env;
 	while (tmp)
 	{
-		if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
-			if (((char *)tmp->content)[ft_strlen(key)] == '=')
-				return (tmp);
+		if (tmp->content)
+		{		
+			if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
+				if (((char *)tmp->content)[ft_strlen(key)] == '=')
+					return (tmp);
+
+		}
 		tmp = tmp->next;
 	}
 	return (NULL);
@@ -67,27 +71,32 @@ char		*ft_getenv(t_list **env, char *key)
 
 int			swap_env(t_list **env, char *s1, char *s2)
 {
-	int		i;
+	t_list	*tmp;
 	char	*old;
 	char	*new;
 	char	**r1;
 	char	**r2;
 
-	new = ft_getenv(env, s1);
-	if (!new || !(old = ft_getenv(env, s2)))
-		return (false);
+	if (!(new = ft_getenv(env, s1))|| !(old = ft_getenv(env, s2)))
+		return (FALSE);
 	r1 = ft_strsplit(new, '=');
 	r2 = ft_strsplit(old, '=');
-	i = -1;
-	while (env)
+	tmp = *env;
+	while (tmp)
 	{
-		if (ft_strncmp((*env)->content, s1, ft_strlen(s1)) == 0)
-			(*env)->content = ft_strjoin(s1, r2[1]);
-		else if (ft_strncmp((*env)->content, s2, ft_strlen(s2)) == 0)
-			(*env)->content = ft_strjoin(s2, r1[1]);
-		*env = (*env)->next;
+		if (ft_strncmp(tmp->content, s1, ft_strlen(s1)) == 0)
+		{
+			tmp->content = ft_strjoin(s1, "=");
+			tmp->content = ft_freejoin(tmp->content, r2[1]);
+		}
+		else if (ft_strncmp(tmp->content, s2, ft_strlen(s2)) == 0)
+		{
+			tmp->content = ft_strjoin(s2, "=");
+			tmp->content = ft_freejoin(tmp->content, r1[1]);
+		}
+		tmp = tmp->next;
 	}
-	return (true);
+	return (TRUE);
 }
 
 /*

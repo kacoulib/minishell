@@ -21,6 +21,7 @@ SRCS		=	src/builtin_0.c \
 				src/tools.c \
 				src/init.c \
 				src/errors.c \
+				src/env_crud.c \
 				src/setting_0.c \
 				src/setting_1.c \
 				src/minishell.c

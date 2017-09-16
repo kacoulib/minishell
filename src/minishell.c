@@ -15,7 +15,7 @@
 static int			builtin_exit(int status)
 {
 	exit(status);
-	return (true);
+	return (TRUE);
 }
 
 /*
@@ -46,11 +46,11 @@ int					is_bultin(char *command, char **av, t_list **env)
 		else if (ft_strcmp(command, "unsetenv") == 0)
 			builtin_unsetenv(env, av);
 		else if (ft_strcmp(command, "exit") == 0)
-			builtin_exit(true);
+			builtin_exit(TRUE);
 		else
 			return (r == 1 ? r : 0);
 	}
-	return (true);
+	return (TRUE);
 }
 
 /*
@@ -81,10 +81,10 @@ char				*get_exeutable_path(char *command, t_list **env)
 	{
 		tmp = ft_strjoin(env_path[i], "/");
 		tmp = ft_strjoin(tmp, command);
-		if (!check_path_access(NULL, tmp))
+		if (check_path_access(command, tmp) == 1)
 			return (tmp);
 	}
-	return (NULL);
+	return (set_errors_r_char(-3, command, NULL));
 }
 
 int					launch(char *command, char **av, t_list **env)
@@ -93,7 +93,7 @@ int					launch(char *command, char **av, t_list **env)
 	char			*command_path;
 
 	if (is_bultin(command, &av[1], env))
-		return (true);
+		return (TRUE);
 	cpid = fork();
 	if (cpid == -1)
 		printf("Error fork not valid pid\n");
@@ -101,11 +101,11 @@ int					launch(char *command, char **av, t_list **env)
 	{
 		if ((command_path = get_exeutable_path(command, env)))
 			execve(command_path, av, convert_list_to_array(*env));
-		builtin_exit(true);
+		builtin_exit(TRUE);
 	}
 	else
 		wait(&cpid);
-	return (true);
+	return (TRUE);
 }
 
 int					main(int ac, char *av[], char *envp[])

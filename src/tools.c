@@ -14,22 +14,23 @@
 
 /*
 **	@param [command] The command that is checking the function.
+**
+**	@Return :
+**				-1	: if the file doesn't exist
+**				0	: if the file exist and we don't have the permission
+**				1	: if the file exist and we have the permission
 */
 
-int			check_path_access(char *command, char *path)
+int				check_path_access(char *command, char *path)
 {
-
-	if (access(path, F_OK & X_OK) == -1)
-	{
-		set_errors(9, command, path);
-		return (0);
-	}
-	return (1);
+	if (access(path, F_OK) == 0)
+		return ((access(path, X_OK) != 0) ? set_errors(9, command, path) : 1);
+	return (-1);
 }
 
-int			get_args_limit(char **av)
+int				get_args_limit(char **av)
 {
-	int		i;
+	int			i;
 
 	i = -1;
 	while (av[++i] && av[i][0] == '-' && av[i][1])
@@ -37,19 +38,19 @@ int			get_args_limit(char **av)
 	return (i);
 }
 
-int			free_arr(char **arr)
+int				free_arr(char **arr)
 {
-	int		i;
+	int			i;
 
 	i = -1;
 	while (arr[++i])
 		free(arr[i]);
-	return (true);
+	return (TRUE);
 }
 
-int			index_of_array(char **arr, char *key)
+int				index_of_array(char **arr, char *key)
 {
-	int i;
+	int			i;
 
 	i = -1;
 	while (arr[++i])
@@ -77,7 +78,7 @@ static int		special_char_extra(char c)
 	else if (c == '\\')
 		putchar('\\');
 	printf("--\n");
-	return (true);
+	return (TRUE);
 }
 
 int				special_char(char *str)
@@ -98,5 +99,5 @@ int				special_char(char *str)
 		else
 			ft_putchar(str[i]);
 	}
-	return (true);
+	return (TRUE);
 }

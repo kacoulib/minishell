@@ -12,12 +12,12 @@ env -i < program > not showing error. Even in bash
 
 
 
-					Bonus:
+	Bonus:			Description													Status:
 
 
 
-	;			Done
-	""			To do
-	Droit 		Gestion des droits d’exécution dans le PATH
-	History		Gestion de l'historique
-	Signaux		Gestion des signaux
+	;					Couper les argument											Done
+	""					Gerer les quotes											To do
+	Droit 				Gestion des droits d’exécution dans le PATH
+	History				Gestion de l'historique
+	Signaux				Gestion des signaux

@@ -25,14 +25,14 @@
 static int		set_errors_second(int id, char *command, char *name)
 {
 	if (id == 9)
-		ft_print("command\033[0m ", command, " \033[1;31mpermission denied: ", name);
-	return (false);
+		ft_print("command\033[0m ", command,
+			" \033[1;31mpermission denied: ", name);
+	return (FALSE);
 }
 int				set_errors(int id, char *command, char *name)
 {
 	if (id != 1 || ft_strcmp(command, "echo") != 0)
 		ft_putstr("\033[1;31mMisihell: ");
-	// printf("%d %s\n", id, command);
 	if (id == -3)
 		ft_print("command\033[0m ", command, " \033[1;31mnot found", NULL);
 	else if (id == -2)
@@ -55,5 +55,5 @@ char				*set_errors_r_char(int id, char *command, char *name)
 {
 	if (!set_errors(id, command, name))
 		return (NULL);
-	return ("true");
+	return ("TRUE");
 }

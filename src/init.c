@@ -112,7 +112,7 @@ static int			get_single_flag_id(t_flag_ctrl *flag_ctrl, char *av)
 }
 
 /*
-**	@param [has_dash] If true then the single '-' is consider as en parameter
+**	@param [has_dash] If TRUE then the single '-' is consider as en parameter
 **						e.g : ls -
 */
 
