@@ -81,7 +81,11 @@ ft_strsub.c \
 ft_strtrim.c \
 ft_tolower.c \
 ft_toupper.c \
-ft_ucfirst.c 
+ft_ucfirst.c \
+ft_last_indexof.c \
+ft_strrev.c \
+get_next_line.c
+
 OBJ	= $(SOURCES:.c=.o)
 FLAGS	= -Wall -Werror -Wextra
 

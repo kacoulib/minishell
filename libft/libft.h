@@ -18,6 +18,9 @@
 # include <unistd.h>
 # include <sys/stat.h>
 # include <sys/types.h>
+# include <fcntl.h>
+# define BUFF_SIZE 8
+
 
 typedef struct		s_list
 {
@@ -95,20 +98,28 @@ int					ft_is_dir(char *path);
 int					ft_putfile(char *str, int type, char *link);
 int					ft_print(char *s1, char *s2, char *s3, char *s4);
 char				*ft_freejoin(char *s1, char const *s2);
+char				*ft_strrev(char *str);
+int					ft_last_indexof(char *str, char c);
+int					get_next_line(const int fd, char **line);
+
+
+
 
 # define SETCOLOR 0
 # define ANSI_COLOR_BLACK	"\x1B[30m\x1B[42m"
 # define ANSI_COLOR_RED		"\x1B[31m"
 # define ANSI_COLOR_GREEN	"\x1B[32m"
 # define ANSI_COLOR_YELLOW	"\x1B[33m"
-# define ANSI_COLOR_BLUE	"\x1B[34m"
+# define ANSI_COLOR_BLUE	"\x1B[36m"
 # define ANSI_COLOR_MAGENTA	"\x1B[35m"
 # define ANSI_COLOR_CYAN	"\x1B[36m"
 # define ANSI_COLOR_RESET	"\x1B[0m"
 
-# define COLOR_FOLDER	"\x1B[36m"
+# define COLOR_BLUE		"\x1B[30m\x1B[46m"
 # define COLOR_LINK		"\x1B[35m"
 # define COLOR_RED		"\x1B[31m"
+# define COLOR_YELLOW	"\x1B[30m\x1B[45m"
 # define COLOR_GREEN	"\x1B[30m\x1B[42m"
+# define COLOR_WHITE	"\x1B[30m\x1B[47m"
 # define COLOR_RESET	"\x1B[0m"
 #endif

@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-char		*check_and_get_flag(char *builtin, char **av) // to replace with the new builtin_echo_args_limit
-{
-	char	*tmp;
-
-	if (ft_strcmp(builtin, "echo") == 0)
-		tmp = ft_strdup(" n e E --help --version ");
-	else
-		return (NULL);
-	return (get_glags(tmp, av, builtin));
-}
-
 int			check_flag(t_list *flag, int id)
 {
 	while (flag)
@@ -60,12 +49,14 @@ t_list		*init_flags(char *flags)
 	return (head);
 }
 
-t_flag_ctrl				*create_flag_ctrl(int has_dash, int has_error)
+t_flag_ctrl				*create_flag_ctrl(char *program_name, int has_dash,
+	int has_error)
 {
 	t_flag_ctrl	*ctr;
 
 	if (!(ctr = (t_flag_ctrl *)malloc(sizeof(t_flag_ctrl) + 1)))
 		return (NULL);
+	ctr->program_name = ((program_name)? ft_strdup(program_name) : NULL);
 	ctr->has_dash = has_dash;
 	ctr->has_error = has_error;
 	ft_memset(ctr->output, '\0', 256);
@@ -91,7 +82,7 @@ static int			get_long_flag_id(t_flag_ctrl *flag_ctrl, char *av)
 		flag_list = flag_list->next;
 	}
 	if (flag_ctrl->has_error)
-		printf("errror : %s not a valid flag\n", av); // to rm
+		set_errors(10, flag_ctrl->program_name, av); // to rm
 	return (-1);
 }
 

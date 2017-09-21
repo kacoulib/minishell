@@ -6,7 +6,7 @@
 #    By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/09/11 14:57:17 by kacoulib          #+#    #+#              #
-#    Updated: 2017/09/12 20:54:56 by kacoulib         ###   ########.fr        #
+#    Updated: 2017/09/17 16:33:30 by kacoulib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,15 +16,23 @@ RM			=	rm -f
 CFLAGS		=	-Wall -Werror -Wextra
 LIB			=	-L./libft -lft -lncurses
 CPPFLAGS	=	-I header
-SRCS		=	src/builtin_0.c \
-				src/builtin_1.c \
+SRCS		=	src/builtins/main.c \
+				src/builtins/cd.c \
+				src/builtins/echo.c \
+				src/builtins/env.c \
+				src/builtins/exit.c \
+				src/builtins/setenv.c \
+				src/builtins/unsetenv.c \
 				src/tools.c \
 				src/init.c \
+				src/shell.c \
 				src/errors.c \
+				src/prompt.c \
+				src/signal.c \
 				src/env_crud.c \
 				src/setting_0.c \
 				src/setting_1.c \
-				src/minishell.c
+				src/main.c
 
 OBJS		=	$(SRCS:.c=.o)
 

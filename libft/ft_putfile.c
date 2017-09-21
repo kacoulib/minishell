@@ -12,6 +12,32 @@
 
 #include "libft.h"
 
+/*
+**	10	yellow
+**	31	yellow	background
+**
+**	4	blue
+**
+**	16	red
+**
+**	31	yellow	background
+**	32	green	background
+**
+*/
+
+static int			ft_putfile_second_part(char *str, int type)
+{
+	if (type == 31)
+		ft_putstr(COLOR_YELLOW);
+	else if (type == 35)
+		ft_putstr(COLOR_BLUE);
+	else if (type == 37)
+		ft_putstr(COLOR_WHITE);
+	ft_putstr(str);
+	ft_putstr(COLOR_RESET);
+	return (1);
+}
+
 int					ft_putfile(char *str, int type, char *link)
 {
 	if (type == 10)
@@ -27,12 +53,10 @@ int					ft_putfile(char *str, int type, char *link)
 		return (1);
 	}
 	if (type == 4)
-		ft_putstr(COLOR_FOLDER);
+		ft_putstr(ANSI_COLOR_BLUE);
 	else if (type == 16)
 		ft_putstr(COLOR_RED);
 	else if (type == 32)
 		ft_putstr(COLOR_GREEN);
-	ft_putstr(str);
-	ft_putstr(COLOR_RESET);
-	return (1);
+	return (ft_putfile_second_part(str, type));
 }

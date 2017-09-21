@@ -21,10 +21,14 @@
 **				1	: if the file exist and we have the permission
 */
 
-int				check_path_access(char *command, char *path)
+int				check_access(char *command, char *path)
 {
 	if (access(path, F_OK) == 0)
-		return ((access(path, X_OK) != 0) ? set_errors(9, command, path) : 1);
+	{
+		if (access(path, X_OK) != 0)
+			return (set_errors(9, command, path));
+		return (1);
+	}
 	return (-1);
 }
 
@@ -62,22 +66,22 @@ int				index_of_array(char **arr, char *key)
 static int		special_char_extra(char c)
 {
 	if (c == 'a')
-		putchar('\a');
+		ft_putchar('\a');
 	else if (c == 'b')
-		putchar('\b');
+		ft_putchar('\b');
 	else if (c == 'f')
-		putchar('\f');
+		ft_putchar('\f');
 	else if (c == 'n')
-		putchar('\n');
+		ft_putchar('\n');
 	else if (c == 'r')
-		putchar('\r');
+		ft_putchar('\r');
 	else if (c == 't')
-		putchar('\t');
+		ft_putchar('\t');
 	else if (c == 'v')
-		putchar('\v');
+		ft_putchar('\v');
 	else if (c == '\\')
-		putchar('\\');
-	printf("--\n");
+		ft_putchar('\\');
+	ft_putendl("--\n"); // tot remove
 	return (TRUE);
 }
 

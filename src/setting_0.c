@@ -51,6 +51,19 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 ** @return [return NULL if the key don't exist OR the key and value]
 */
 
+char		*ft_getenv_val(t_list **env, char *key)
+{
+	int		i;
+	char	*tmp;
+
+	if (!(tmp = ft_getenv(env, key)))
+		return (NULL);
+	i = 0;
+	if ((i = ft_indexof(tmp, '=')) > -1)
+		return (tmp[i + 1] ? &tmp[i + 1] : NULL);
+	return (tmp);
+}
+
 char		*ft_getenv(t_list **env, char *key)
 {
 	t_list *tmp;

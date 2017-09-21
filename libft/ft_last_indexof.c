@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freejoin.c                                      :+:      :+:    :+:   */
+/*   ft_last_indexof.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/02 03:54:19 by kacoulib          #+#    #+#             */
-/*   Updated: 2017/09/02 03:54:29 by kacoulib         ###   ########.fr       */
+/*   Created: 2017/09/21 06:36:10 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/09/21 06:36:13 by kacoulib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_freejoin(char *s1, char const *s2)
+int					ft_last_indexof(char *str, char c)
 {
-	char	*tmp;
+	int				i;
 
-	tmp = ft_strjoin(s1, s2);
-	if (s1)
-		free(s1);
-	s1 = NULL;
-	return (tmp);
+	if (!str)
+		return (-1);
+	i = ft_strlen(str);
+	while (--i > -1)
+	{
+		if (str[i] == c)
+			return (i);
+	}
+	return (-1);
 }

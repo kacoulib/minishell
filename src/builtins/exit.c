@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freejoin.c                                      :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/02 03:54:19 by kacoulib          #+#    #+#             */
-/*   Updated: 2017/09/02 03:54:29 by kacoulib         ###   ########.fr       */
+/*   Created: 2017/09/21 05:38:11 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/09/21 05:38:22 by kacoulib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char		*ft_freejoin(char *s1, char const *s2)
+int				builtin_exit(char *av)
 {
-	char	*tmp;
+	int			i;
 
-	tmp = ft_strjoin(s1, s2);
-	if (s1)
-		free(s1);
-	s1 = NULL;
-	return (tmp);
+	i = -1;
+	av = ft_strtrim(av);
+	if (av && !ft_isdigit(av[0]))
+		return (TRUE + set_errors(11, "exit", NULL));
+	while (av && av[++i])
+		if (!ft_isdigit(av[i]))
+			return (TRUE + set_errors(12, "exit", NULL));
+	exit(ft_atoi(av));
+	return (TRUE);
 }

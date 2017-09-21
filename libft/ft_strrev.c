@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freejoin.c                                      :+:      :+:    :+:   */
+/*   ft_strrev.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/02 03:54:19 by kacoulib          #+#    #+#             */
-/*   Updated: 2017/09/02 03:54:29 by kacoulib         ###   ########.fr       */
+/*   Created: 2017/09/21 06:10:11 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/09/21 06:10:21 by kacoulib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_freejoin(char *s1, char const *s2)
+char		*ft_strrev(char *s)
 {
-	char	*tmp;
+	int		i;
+	int		j;
+	char	tmp;
 
-	tmp = ft_strjoin(s1, s2);
-	if (s1)
-		free(s1);
-	s1 = NULL;
-	return (tmp);
+	i = -1;
+	j = ft_strlen(s);
+	while (i++ < (j-- - 1))
+	{
+		tmp = s[i];
+		s[i] = s[j];
+		s[j] = tmp;
+	}
+	return (s);
 }
+

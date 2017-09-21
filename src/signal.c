@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freejoin.c                                      :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/02 03:54:19 by kacoulib          #+#    #+#             */
-/*   Updated: 2017/09/02 03:54:29 by kacoulib         ###   ########.fr       */
+/*   Created: 2017/09/21 05:17:10 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/09/21 05:17:25 by kacoulib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char		*ft_freejoin(char *s1, char const *s2)
+static void	handle_signal(int signum)
 {
-	char	*tmp;
+	(void)signum;
+	signal(signum, SIG_IGN);
+}
 
-	tmp = ft_strjoin(s1, s2);
-	if (s1)
-		free(s1);
-	s1 = NULL;
-	return (tmp);
+void		signal_handler(void)
+{
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 }

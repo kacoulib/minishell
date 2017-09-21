@@ -27,6 +27,17 @@ static int		set_errors_second(int id, char *command, char *name)
 	if (id == 9)
 		ft_print("command\033[0m ", command,
 			" \033[1;31mpermission denied: ", name);
+	else if (id == 10)
+	{
+		ft_print(command, ": unrecognized option '", name, NULL);
+		ft_print("Try ", command, " --help' for more information.", NULL);
+	}
+	else if (id == 11)
+		ft_print(command, ": Expression Syntax.'", NULL, NULL);
+	else if (id == 12)
+		ft_print(command, ": Badly formed number.'", NULL, NULL);
+	else if (id == 13)
+		ft_putendl("Shell could not be initialized");
 	return (FALSE);
 }
 int				set_errors(int id, char *command, char *name)
@@ -38,7 +49,7 @@ int				set_errors(int id, char *command, char *name)
 	else if (id == -2)
 		ft_print(command, " \033[0m<< ", name, " >>\033[1;31m not defined\n");
 	else if (id == -1)
-		printf("cd error no path to home\n");
+		ft_putendl("cd error no path to home\n");
 	else if (id == 0)
 		ft_print("minishel: cd: ", name, ":  No such file or directory", NULL);
 	else if (id == 1 && ft_strcmp(command, "echo") != 0)
