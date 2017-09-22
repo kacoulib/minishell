@@ -29,7 +29,7 @@ static	int		builtin_cd_change_env(t_list **env, char *path)
 
 static int		builtin_cd_second_part(t_list **env, char *av, char **path)
 {
-	char **tmp;
+	char		**tmp;
 
 	if (av && ft_strcmp(av, "--") != 0)
 	{

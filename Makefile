@@ -32,6 +32,7 @@ SRCS		=	src/builtins/main.c \
 				src/env_crud.c \
 				src/setting_0.c \
 				src/setting_1.c \
+				src/convert.c \
 				src/main.c
 
 OBJS		=	$(SRCS:.c=.o)

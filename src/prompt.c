@@ -35,13 +35,14 @@ static int			ft_show_git_branch(void)
 	return (TRUE);
 }
 
-static int			ft_show_pwd(t_list **env)
+static int			ft_show_pwd(t_list **env, char *login)
 {
 	char			*tmp;
 
 	if ((tmp = ft_getenv_val(env, "PWD")))
 	{
 		ft_putfile(":", 37, NULL);
+		tmp = convert_home_tilde(tmp, login);
 		ft_putfile(tmp, 32, NULL);
 	}
 	return (ft_show_git_branch());
@@ -53,7 +54,7 @@ static int			ft_show_login(t_list **env)
 
 	if ((tmp = ft_getenv_val(env, "USER")))
 		ft_putfile(tmp, 31, NULL);
-	return (ft_show_pwd(env));
+	return (ft_show_pwd(env, tmp));
 }
 
 int					ft_print_prompt(void)

@@ -21,6 +21,6 @@
 
 1.	;				Couper les argument											Done
 2.	""				Gerer les quotes											To do
-3.	Droit 			Gestion des droits d’exécution dans le PATH
-4.	History			Gestion de l'historique
-5.	Signaux			Gestion des signaux
+3.	Droit 			Gestion des droits d’exécution dans le PATH					Done
+4.	History			Gestion de l'historique										To do
+5.	Signaux			Gestion des signaux											Done
