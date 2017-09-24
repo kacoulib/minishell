@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memalloc.c                                      :+:      :+:    :+:   */
+/*   free_arr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kacoulib <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/23 18:53:01 by kacoulib          #+#    #+#             */
-/*   Updated: 2016/11/23 18:55:19 by kacoulib         ###   ########.fr       */
+/*   Created: 2017/09/24 12:56:33 by kacoulib          #+#    #+#             */
+/*   Updated: 2017/09/24 12:56:37 by kacoulib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void		*ft_memalloc(size_t size)
+int				free_arr(char **arr)
 {
-	void	*r;
+	int			i;
 
-	if (!(r = malloc(size)))
-		return (NULL);
-	ft_bzero(r, size);
-	return (r);
+	if (!arr)
+		return (0);
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
+	return (1);
 }

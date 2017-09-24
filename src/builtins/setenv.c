@@ -26,10 +26,8 @@ int				builtin_setenv(t_list **env, char **av)
 	t_list		*old;
 
 	if (!av || !av[0])
-	{
 		return (read_env(env, NULL));
-	}
-	if (av[2] && ft_strtrim(av[2]))
+	if (av[2])
 		return (set_errors(4, "setenv", NULL));
 	if((old = ft_getenv_from_list(env, av[0])))
 		update_env(old, av[0], av[1]);

@@ -100,7 +100,9 @@ int					ft_print(char *s1, char *s2, char *s3, char *s4);
 char				*ft_freejoin(char *s1, char const *s2);
 char				*ft_strrev(char *str);
 int					ft_last_indexof(char *str, char c);
+char				*ft_preg_replace(char *str, char *to_replace, char *replace);
 int					get_next_line(const int fd, char **line);
+int					free_arr(char **arr);
 
 
 

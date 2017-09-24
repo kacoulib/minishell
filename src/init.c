@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int			check_flag(t_list *flag, int id)
+int					check_flag(t_list *flag, int id)
 {
 	while (flag)
 	{
@@ -23,13 +23,13 @@ int			check_flag(t_list *flag, int id)
 	return (0);
 }
 
-t_list		*init_flags(char *flags)
+t_list				*init_flags(char *flags)
 {
-	int		i;
-	int		j;
-	char	**str;
-	t_list	*head;
-	t_list	*new;
+	int				i;
+	int				j;
+	char			**str;
+	t_list			*head;
+	t_list			*new;
 
 	if (!flags)
 		return (0);
@@ -49,14 +49,14 @@ t_list		*init_flags(char *flags)
 	return (head);
 }
 
-t_flag_ctrl				*create_flag_ctrl(char *program_name, int has_dash,
+t_flag_ctrl			*create_flag_ctrl(char *program_name, int has_dash,
 	int has_error)
 {
-	t_flag_ctrl	*ctr;
+	t_flag_ctrl		*ctr;
 
 	if (!(ctr = (t_flag_ctrl *)malloc(sizeof(t_flag_ctrl) + 1)))
 		return (NULL);
-	ctr->program_name = ((program_name)? ft_strdup(program_name) : NULL);
+	ctr->program_name = ((program_name) ? ft_strdup(program_name) : NULL);
 	ctr->has_dash = has_dash;
 	ctr->has_error = has_error;
 	ft_memset(ctr->output, '\0', 256);
@@ -107,11 +107,11 @@ static int			get_single_flag_id(t_flag_ctrl *flag_ctrl, char *av)
 **						e.g : ls -
 */
 
-int			builtin_echo_args_limit(t_flag_ctrl *flag_ctrl, char **av)
+int					builtin_echo_args_limit(t_flag_ctrl *flag_ctrl, char **av)
 {
-	int			i;
-	int			j;
-	int			k;
+	int				i;
+	int				j;
+	int				k;
 
 	i = -1;
 	while (av[++i] && av[i][0] == '-')

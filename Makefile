@@ -13,7 +13,7 @@
 NAME		=	minishell
 CC			=	gcc
 RM			=	rm -f
-CFLAGS		=	-Wall -Werror -Wextra
+CFLAGS		=	-Wall -Werror -Wextra -g3
 LIB			=	-L./libft -lft -lncurses
 CPPFLAGS	=	-I header
 SRCS		=	src/builtins/main.c \

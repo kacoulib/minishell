@@ -84,7 +84,10 @@ ft_toupper.c \
 ft_ucfirst.c \
 ft_last_indexof.c \
 ft_strrev.c \
-get_next_line.c
+ft_preg_replace.c \
+get_next_line.c \
+free_arr.c
+
 
 OBJ	= $(SOURCES:.c=.o)
 FLAGS	= -Wall -Werror -Wextra

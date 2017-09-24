@@ -32,7 +32,6 @@ typedef struct			s_flag_ctrl
 
 typedef struct			s_shell_ctrl
 {
-	char				pwd[256];
 	struct s_list		*env;
 }						t_shell_ctrl;
 
@@ -51,6 +50,8 @@ int						builtin_echo_args_limit(t_flag_ctrl *flag_ctr, char **av);
 int						create_env(t_list **env, char *name, char *value);
 int						update_env(t_list *env, char *name, char *value);
 int						read_env(t_list **env, char *flags);
+void					del_env(t_list *env, size_t len);
+
 
 t_shell_ctrl			*get_shell(void);
 t_shell_ctrl			*init_shell(char *envp[]);

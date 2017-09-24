@@ -46,7 +46,7 @@ static char			*get_exeutable_path(char *command, t_list **env)
 	char			**env_path;
 	char			*tmp;
 
-	env_path = (char **)ft_memalloc(sizeof(char));
+	env_path = (char **)ft_memalloc(sizeof(char *) * 1);
 	if (!(*env_path = ft_getenv(env, "PATH")))
 		return (set_errors_r_char(-3, command, NULL));
 	else if (access(command, F_OK & X_OK) != -1)
@@ -78,6 +78,8 @@ static int			launch(char *command, char **av, t_list **env)
 	{
 		if ((command_path = get_exeutable_path(command, env)))
 			execve(command_path, av, convert_list_to_array(*env));
+		if(command)
+			free(command);
 		builtin_exit("1");
 	}
 	else
@@ -99,15 +101,16 @@ static int			ft_parse_args(t_shell_ctrl *shell)
 		{
 			tmp = ft_strsub(buff, 0, i);
 			commands = ft_strsplit(tmp, ';');
+			if (tmp)
+				free(tmp);
 			i = -1;
 			while (commands[++i])
 			{
 				args = ft_strsplit(commands[i], ' ');
-				tmp = args[0] ? args[0] : ft_strtrim(buff);
+				tmp = args[0] ? args[0] : buff;
 				launch(tmp, args, &shell->env) && free_arr(args);
 			}
-			if (i > 0)
-				free_arr(commands);
+			free_arr(commands);
 			ft_print_prompt();
 		}
 	}
@@ -123,5 +126,7 @@ int					main(int ac, char *av[], char *envp[])
 	ft_print_prompt();
 	signal_handler();
 	ft_parse_args(shell);
+	ft_lstdel(&shell->env, (void *)del_env);
+	free(shell);
 	return (ac && av);
 }

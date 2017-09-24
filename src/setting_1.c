@@ -48,8 +48,14 @@ char		**convert_list_to_array(t_list *list)
 	int		i;
 	char	**r;
 
+	i = list_length(list);
+	if (!i)
+		return (0);
+	i = sizeof(char *) * (i + 1);
+	if (!(r = (char **)malloc(i)))
+		return (NULL);
+	ft_bzero(r, i);
 	i = 0;
-	r = (char **)malloc(sizeof(char) * (list_length(list) + 1));
 	while (list)
 	{
 		r[i] = list->content;

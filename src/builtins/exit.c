@@ -15,7 +15,10 @@
 int				builtin_exit(char *av)
 {
 	int			i;
+	t_shell_ctrl	*shell;
 
+	if (!(shell = get_shell()))
+		return (0);
 	i = -1;
 	av = ft_strtrim(av);
 	if (av && !ft_isdigit(av[0]))
@@ -23,6 +26,7 @@ int				builtin_exit(char *av)
 	while (av && av[++i])
 		if (!ft_isdigit(av[i]))
 			return (TRUE + set_errors(12, "exit", NULL));
+	ft_lstdel(&shell->env, (void *)del_env);
 	exit(ft_atoi(av));
 	return (TRUE);
 }

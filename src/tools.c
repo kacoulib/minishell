@@ -42,16 +42,6 @@ int				get_args_limit(char **av)
 	return (i);
 }
 
-int				free_arr(char **arr)
-{
-	int			i;
-
-	i = -1;
-	while (arr[++i])
-		free(arr[i]);
-	return (TRUE);
-}
-
 int				index_of_array(char **arr, char *key)
 {
 	int			i;

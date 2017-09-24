@@ -31,11 +31,10 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 	while (tmp)
 	{
 		if (tmp->content)
-		{		
+		{
 			if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
 				if (((char *)tmp->content)[ft_strlen(key)] == '=')
 					return (tmp);
-
 		}
 		tmp = tmp->next;
 	}
@@ -70,46 +69,6 @@ char		*ft_getenv(t_list **env, char *key)
 
 	tmp = ft_getenv_from_list(env, key);
 	return (tmp ? tmp->content : NULL);
-}
-
-/*
-** Switch two env
-**
-** @param  { env }   An array of key pair vaule]
-** @param  { s1 }    The first key in env that should replace]
-** @param  { s1 }    The second key in env that should replace]
-**
-** @return     [return 1 on success otherwise return 0]
-*/
-
-int			swap_env(t_list **env, char *s1, char *s2)
-{
-	t_list	*tmp;
-	char	*old;
-	char	*new;
-	char	**r1;
-	char	**r2;
-
-	if (!(new = ft_getenv(env, s1))|| !(old = ft_getenv(env, s2)))
-		return (FALSE);
-	r1 = ft_strsplit(new, '=');
-	r2 = ft_strsplit(old, '=');
-	tmp = *env;
-	while (tmp)
-	{
-		if (ft_strncmp(tmp->content, s1, ft_strlen(s1)) == 0)
-		{
-			tmp->content = ft_strjoin(s1, "=");
-			tmp->content = ft_freejoin(tmp->content, r2[1]);
-		}
-		else if (ft_strncmp(tmp->content, s2, ft_strlen(s2)) == 0)
-		{
-			tmp->content = ft_strjoin(s2, "=");
-			tmp->content = ft_freejoin(tmp->content, r1[1]);
-		}
-		tmp = tmp->next;
-	}
-	return (TRUE);
 }
 
 /*

@@ -12,20 +12,21 @@
 
 #include "libft.h"
 
-char		*ft_strrev(char *s)
+char		*ft_strrev(char *str)
 {
 	int		i;
 	int		j;
 	char	tmp;
 
+	if (!str)
+		return (NULL);
 	i = -1;
-	j = ft_strlen(s);
+	j = ft_strlen(str);
 	while (i++ < (j-- - 1))
 	{
-		tmp = s[i];
-		s[i] = s[j];
-		s[j] = tmp;
+		tmp = str[i];
+		str[i] = str[j];
+		str[j] = tmp;
 	}
-	return (s);
+	return (str);
 }
-

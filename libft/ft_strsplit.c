@@ -62,14 +62,13 @@ char			**ft_strsplit(char const *s, char c)
 	size_t	i;
 
 	ptr = NULL;
-	i = 0;
 	if (s)
 	{
 		str = (char*)s;
 		n_word = ft_wordcount(s, c);
-		ptr = (char**)ft_memalloc((n_word + 1) * sizeof(char*));
-		if (!ptr)
+		if (!(ptr = (char **)ft_memalloc(sizeof(char*) * (n_word + 1))))
 			return (NULL);
+		i = 0;
 		while (i < n_word)
 			str = ft_wordpicker(str, ptr + i++, c);
 		ptr[n_word] = 0;

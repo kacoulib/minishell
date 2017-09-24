@@ -38,6 +38,8 @@ static int		set_errors_second(int id, char *command, char *name)
 		ft_print(command, ": Badly formed number.'", NULL, NULL);
 	else if (id == 13)
 		ft_putendl("Shell could not be initialized");
+	else if (id == 14)
+		ft_print(command, ": ", name, " not set");
 	return (FALSE);
 }
 int				set_errors(int id, char *command, char *name)
@@ -56,7 +58,10 @@ int				set_errors(int id, char *command, char *name)
 		ft_print(command, ": unrecognized option '", name,
 			"'\n Try 'command --help' for more information.");
 	else if (id == 3)
-		ft_putstr("name is NULL, points to a string of length 0, or contains an '=' character.");
+	{
+		ft_putstr("name is NULL, points to a string of length 0, or contains");
+		ft_putstr("an '=' character.");
+	}
 	else if (id == 4)
 		ft_print(command, ": to many args.", "See --help for more information.", NULL);
 	ft_putstr("\033[0m");

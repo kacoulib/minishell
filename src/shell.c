@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 t_shell_ctrl			*get_shell(void)
 {
 	static t_shell_ctrl	*shell = NULL;
