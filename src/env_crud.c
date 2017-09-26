@@ -29,6 +29,7 @@ int				create_env(t_list **env, char *name, char *value)
 		*env = ft_lstnew(tmp, ft_strlen(tmp) + 1);
 	else
 		ft_lstpush(*env, ft_lstnew(tmp, ft_strlen(tmp) + 1));
+	free(tmp);
 	return (TRUE);
 }
 
@@ -61,14 +62,13 @@ int				update_env(t_list *env, char *name, char *value)
 {
 	char		*tmp;
 
-	if (!env)
-		return (0);
+	if (!env || !name)
+		return (FALSE);
 	if (!(tmp = ft_strjoin(name, "=")))
-		return (0);
+		return (FALSE);
 	if (value)
-		if (!(tmp = ft_freejoin(tmp, value)))
-			return (0);
-	free(env->content);
+		if (!(tmp = ft_strjoin(tmp, value)))
+			return (FALSE);
 	env->content = tmp;
 	return (TRUE);
 }
@@ -92,30 +92,20 @@ void				del_env(t_list *env, size_t len)
 
 int			swap_env(t_list **env, char *s1, char *s2)
 {
-	t_list	*tmp;
-	char	*old;
-	char	*new;
-	char	**r1;
-	char	**r2;
+	t_list	*new;
+	t_list	*old;
+	char	**n;
+	char	**o;
 
-	if (!(new = ft_getenv(env, s1)) || !(old = ft_getenv(env, s2)))
+	if (!s1 || !s2)
 		return (FALSE);
-	r1 = ft_strsplit(new, '=');
-	r2 = ft_strsplit(old, '=');
-	tmp = *env;
-	while (tmp)
-	{
-		if (ft_strncmp(tmp->content, s1, ft_strlen(s1)) == 0)
-		{
-			tmp->content = ft_strjoin(s1, "=");
-			tmp->content = ft_freejoin(tmp->content, r2[1]);
-		}
-		else if (ft_strncmp(tmp->content, s2, ft_strlen(s2)) == 0)
-		{
-			tmp->content = ft_strjoin(s2, "=");
-			tmp->content = ft_freejoin(tmp->content, r1[1]);
-		}
-		tmp = tmp->next;
-	}
+	new = ft_getenv_from_list(env, s1);
+	old = ft_getenv_from_list(env, s2);
+	if (!(old) || !new)
+		return (FALSE);
+	if (!(n = ft_strsplit(new->content, '=')) || !(o = ft_strsplit(old->content, '=')))
+		return (FALSE);
+	update_env(new, n[0], o[1]);
+	update_env(new, o[0], n[1]);
 	return (TRUE);
 }

@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-int				builtin_exit(char *av)
+int					builtin_exit(char *av)
 {
-	int			i;
+	int				i;
 	t_shell_ctrl	*shell;
 
 	if (!(shell = get_shell()))

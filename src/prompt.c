@@ -27,7 +27,7 @@ static int			ft_show_git_branch(void)
 				ft_putchar(':');
 				ft_putfile(&line[i], 4, NULL);
 			}
-			free(line);
+			// free(line);
 		}
 	}
 	ft_putstr("]\n$ ");
@@ -40,11 +40,12 @@ static int			ft_show_pwd(t_list **env, char *login)
 
 	if ((tmp = ft_getenv_val(env, "PWD")))
 	{
-		ft_putchar(':');
-		tmp = convert_home_tilde(tmp, login);
-		ft_putfile(tmp, 32, NULL);
-		if (tmp)
+		if ((tmp = convert_home_to_tilde(tmp, login)))
+		{
+			ft_putchar(':');
+			ft_putfile(tmp, 32, NULL);
 			free(tmp);
+		}
 	}
 	return (ft_show_git_branch());
 }

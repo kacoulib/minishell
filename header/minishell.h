@@ -85,7 +85,8 @@ int						index_of_array(char **arr, char *key);
 t_flag_ctrl				*create_flag_ctrl(char *program_name, int has_dash,
 	int has_error);
 void 					signal_handler(void);
-char					*convert_home_tilde(char *path, char *login);
+char					*convert_home_to_tilde(char *path, char *login);
+char					*convert_tilde_to_home(char *path, char *login);
 
 # define PATH_MAX 255
 # define TRUE 1

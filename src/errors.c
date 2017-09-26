@@ -40,6 +40,8 @@ static int		set_errors_second(int id, char *command, char *name)
 		ft_putendl("Shell could not be initialized");
 	else if (id == 14)
 		ft_print(command, ": ", name, " not set");
+	else if (id == 100)
+		ft_putendl(name);
 	return (FALSE);
 }
 int				set_errors(int id, char *command, char *name)

@@ -12,44 +12,60 @@
 
 #include "minishell.h"
 
-static int		ft_set_new_pwd(t_list **env)
+static int		ft_set_old_and_new_pwd(t_list **env, char *old_path)
 {
-	char		**tmp;
+	t_list		*pwd;
+	t_list		*old_pwd;
 	char		new_path[256];
 
 	ft_bzero(new_path, 256);
 	if (!getcwd(new_path, 256))
 		return (FALSE);
-	tmp = (char **)ft_memalloc(sizeof(char *) * (3));
-	tmp[0] = ft_strdup("PWD");
-	tmp[1] = new_path;
-	tmp[2] = NULL;
-	builtin_setenv(env, tmp);
+	if (!(pwd = ft_getenv_from_list(env, "PWD")))
+	{
+		if (!create_env(env, "PWD", new_path))
+			return (set_errors(100, NULL, "cd error"));
+		pwd = ft_getenv_from_list(env, "PWD");
+	}
+	if (!(old_pwd = ft_getenv_from_list(env, "OLDPWD")))
+	{
+		if (!create_env(env, "OLDPWD", old_path))
+			return (set_errors(100, NULL, "cd error"));
+		old_pwd = ft_getenv_from_list(env, "OLDPWD");
+	}
+	// return (1);
+	update_env(pwd, "PWD", new_path);
+	update_env(old_pwd, "OLDPWD", old_path);
 	return (TRUE);
 }
 
-static int		builtin_cd_second_part(t_list **env, char *av, char **path)
+static char		*ft_get_path_from_av(t_list **env, char **av)
 {
-	char		**tmp;
+	char		*path;
+	char		*tmp;
 
-	if (av && ft_strcmp(av, "--") != 0)
+	path = NULL;
+	if ((!av || !av[0]) && !(path = ft_getenv_val(env, "HOME")))
+		return (NULL);
+	if (!path)
 	{
-		if (ft_strcmp(av, "-") == 0)
+		if ((path = av[0]))
 		{
-			if (swap_env(env, "OLDPWD", "PWD"))
-				*path = ft_getenv_val(env, "PWD");
-			else
-				*path = ft_getenv_val(env, "USER");
-			if (*path || !(tmp = ft_strsplit(*path, '=')))
-				return (FALSE);
-			*path = tmp[1];
+			if (ft_strcmp(path, "-") == 0)
+			{
+				if (!(path = ft_getenv_val(env, "OLDPWD")))
+					if (!(path = ft_getenv_val(env, "HOME")))
+						return (NULL);
+			}
+			else if (path[0] == '~')
+			{
+				if (!(tmp = ft_getenv_val(env, "USER")))
+					return (NULL);
+				path = convert_tilde_to_home(path, tmp);
+			}
 		}
-		else
-			*path = av;
-		return (TRUE);
 	}
-	*path = NULL;
-	return (FALSE);
+	return (path);
 }
 
 /*
@@ -64,27 +80,17 @@ static int		builtin_cd_second_part(t_list **env, char *av, char **path)
 
 int				builtin_cd(t_list **env, char **av)
 {
-	char		**tmp;
 	char		*path;
+	char		*old_path;
 
 	if (av && av[0] && av[1])
 		return (set_errors(4, "cd", NULL));
-	path = av[0];
-	if (!path && !(path = ft_getenv(env, "HOME")))
-		return (set_errors(14, "cd", NULL));
-
-	builtin_cd_second_part(env, av[0], &path);
+	if (!(path = ft_get_path_from_av(env, av)))
+		return (set_errors(-1, NULL, NULL));
 	if (!check_access("cd", path))
 		return (FALSE);
-	if (!path)
-	{
-		if ((tmp = ft_strsplit(ft_getenv(env, "HOME"), '=')))
-			path = tmp[1];
-		builtin_setenv(env, av);
-	}
-	if (!path)
-		return (set_errors(-1, NULL, NULL));
+	old_path = ft_getenv_val(env, "PWD");
 	if (chdir(path) < 0)
-		set_errors(0, NULL, path);
-	return (ft_set_new_pwd(env));
+		return (set_errors(0, NULL, path));
+	return (ft_set_old_and_new_pwd(env, old_path));
 }

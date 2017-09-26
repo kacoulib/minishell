@@ -26,6 +26,8 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 	t_list	*tmp;
 	int		i;
 
+	if (!key)
+		return (NULL);
 	i = -1;
 	tmp = *env;
 	while (tmp)
@@ -98,7 +100,7 @@ char		*get_single_flags(char *flags[], char *av, char *command)
 				r = ft_strdup(tmp);
 			else
 				r = ft_strjoin(r, tmp);
-			r = ft_strjoin(r, " ");
+			r = ft_freejoin(r, " ");
 		}
 		else
 		{

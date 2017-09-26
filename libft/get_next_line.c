@@ -18,6 +18,8 @@ int		check(char **file, char **line, char **tmp)
 
 	if (tmp == NULL)
 	{
+		if (*line)
+			free(*line);
 		*line = ft_strdup(*file);
 		free(*file);
 		*file = NULL;
@@ -55,9 +57,8 @@ int		get_next_line(const int fd, char **line)
 	}
 	if (i == -1)
 		return (-1);
-	if (chr)
-		return (check(&file, line, &tmp));
-	if (i == 0 && ft_strlen(file) > 0)
-		return (check(&file, line, NULL));
+	if (chr || (i == 0 && ft_strlen(file) > 0))
+		return (check(&file, line, (chr ? &tmp : NULL)));
+	free(file);
 	return (0);
 }
