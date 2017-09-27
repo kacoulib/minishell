@@ -36,8 +36,12 @@ t_shell_ctrl			*init_shell(char *envp[])
 int						delete_shell(void)
 {
 	t_shell_ctrl		*shell;
+	t_list				*env;
 
 	if (!(shell = get_shell()))
 		return (FALSE);
+	env = shell->env;
+	ft_lstdel(&env, (void *)del_env);
+	free(shell);
 	return (TRUE);
 }

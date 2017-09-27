@@ -22,5 +22,6 @@ int				free_arr(char **arr)
 	while (arr[++i])
 		free(arr[i]);
 	free(arr);
+	arr = NULL;
 	return (1);
 }

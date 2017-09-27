@@ -12,30 +12,28 @@
 
 #include "minishell.h"
 
-char			*convert_home_to_tilde(char *path, char *login)
+char			*convert_home_to_tilde(char *path, char *home)
 {
 	int			i;
-	char		*tmp;
-
-	if (!path || !login || !(tmp = ft_strjoin("/Users/", login)))
-		return (NULL);
-	i = ft_strlen(tmp) - 1;
-	if (ft_strncmp(path, tmp, i) == 0)
-		path = ft_preg_replace(path, tmp, "~");
-	free(tmp);
-	return (path);
-}
-
-char			*convert_tilde_to_home(char *path, char *login)
-{
-	char		*tmp;
 	char		*ret;
 
-	if (!path || !login || path[0] != '~')
+	if (!path || !home)
 		return (NULL);
-	if (!(tmp = ft_strjoin("/Users/", login)))
+	i = ft_strlen(home) - 1;
+	if (ft_strncmp(path, home, i) == 0)
+		ret = ft_preg_replace(path, home, "~");
+	else
+		ret = ft_strdup(path);
+	return (ret);
+}
+
+char			*convert_tilde_to_home(char *path, char *home)
+{
+	char		*ret;
+
+	if (!path || !home)
 		return (NULL);
-	ret = ft_preg_replace(path, "~", tmp);
-	free(tmp);
+	ret = ft_preg_replace(path, "~", home);
+	printf("%s %s %s\n", path, home, ret);
 	return (path);
 }

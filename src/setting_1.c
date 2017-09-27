@@ -15,17 +15,17 @@
 t_list		*copy_env(char *env[])
 {
 	int		i;
-	t_list	*tmp;
+	t_list	*new;
 	t_list	*r;
 
 	if (!env[0])
-		return (ft_lstnew(NULL, sizeof(t_list) + 1));
+		return (NULL);
 	i = 0;
 	r = ft_lstnew(env[0], ft_strlen(env[0]) + 1);
 	while (env[++i])
 	{
-		tmp = ft_lstnew(env[i], ft_strlen(env[i]) + 1);
-		ft_lstadd(&r, tmp);
+		new = ft_lstnew(env[i], ft_strlen(env[i]) + 1);
+		ft_lstadd(&r, new);
 	}
 	return (r);
 }
@@ -69,6 +69,26 @@ void		del(void *content, size_t len)
 {
 	if (content)
 		free(content);
-	if (len)
-		;
+	content = NULL;
+	(void)len;
+}
+
+int			ft_env_exist(t_list **env, char *key)
+{
+	return ((ft_getenv_from_list(env, key) ? 1 : 0));
+}
+
+int		ft_check_env(t_list **env)
+{
+
+	if (!ft_env_exist(env, "OLDPWD"))
+		set_errors(100, NULL, "env OLDPWD not set.");
+	else if (!ft_env_exist(env, "PWD"))
+		set_errors(100, NULL, "env PWD not set.");
+	else if (!ft_env_exist(env, "HOME"))
+		set_errors(100, NULL, "env HOME not set.");
+	else
+		return (1);
+	builtin_exit("0");
+	return (0);
 }

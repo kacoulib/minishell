@@ -86,7 +86,8 @@ ft_last_indexof.c \
 ft_strrev.c \
 ft_preg_replace.c \
 get_next_line.c \
-free_arr.c
+free_arr.c \
+ft_free.c
 
 
 OBJ	= $(SOURCES:.c=.o)

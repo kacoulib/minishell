@@ -17,6 +17,7 @@ static int			ft_show_git_branch(void)
 	char			*line;
 	int				i;
 
+	line = NULL;
 	if ((i = open(".git/HEAD", O_RDONLY)) > -1)
 	{
 		if (get_next_line(i, &line) > -1)
@@ -27,20 +28,23 @@ static int			ft_show_git_branch(void)
 				ft_putchar(':');
 				ft_putfile(&line[i], 4, NULL);
 			}
-			// free(line);
 		}
+		if (line)
+			free(line);
 	}
 	ft_putstr("]\n$ ");
 	return (TRUE);
 }
 
-static int			ft_show_pwd(t_list **env, char *login)
+static int			ft_show_pwd(t_list **env)
 {
 	char			*tmp;
+	char			*home;
 
 	if ((tmp = ft_getenv_val(env, "PWD")))
 	{
-		if ((tmp = convert_home_to_tilde(tmp, login)))
+		home = ft_getenv_val(env, "HOME");
+		if ((tmp = convert_home_to_tilde(tmp, home)))
 		{
 			ft_putchar(':');
 			ft_putfile(tmp, 32, NULL);
@@ -56,7 +60,7 @@ static int			ft_show_login(t_list **env)
 
 	if ((tmp = ft_getenv_val(env, "USER")))
 		ft_putfile(tmp, 30, NULL);
-	return (ft_show_pwd(env, tmp));
+	return (ft_show_pwd(env));
 }
 
 int					ft_print_prompt(void)

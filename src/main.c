@@ -18,18 +18,18 @@ static char			*get_exc_path_last_part(char **env_path, char *command)
 	char			*tmp;
 
 	i = -1;
-	tmp = NULL;
 	while (env_path[++i])
 	{
 		if (check_access(command, env_path[i]) == 1)
 		{
-			if (tmp)
-				tmp = ft_freejoin(env_path[i], "/");
-			else
-				tmp = ft_strjoin(env_path[i], "/");
-			tmp = ft_freejoin(tmp, command);
+			tmp = NULL;
+			if (!(tmp = ft_strjoin(env_path[i], "/")))
+				return (NULL);
+			if (!(tmp = ft_freejoin(tmp, command)))
+				return (NULL);
 			if (check_access(command, tmp) == 1)
 				return (tmp);
+			free(tmp);
 		}
 	}
 	return (NULL);
@@ -44,24 +44,26 @@ static char			*get_exc_path_last_part(char **env_path, char *command)
 static char			*get_exeutable_path(char *command, t_list **env)
 {
 	char			**env_path;
+	char			*ret;
 	char			*tmp;
 
-	env_path = (char **)ft_memalloc(sizeof(char *) * 1);
-	if (!(*env_path = ft_getenv(env, "PATH")))
+	env_path = NULL;
+	if (!(tmp = ft_getenv(env, "PATH")))
 		return (set_errors_r_char(-3, command, NULL));
 	else if (access(command, F_OK & X_OK) != -1)
-	{
 		return (command);
-	}
 	else if (command[0] == '.' && command[1] == '/'
 		&& (ft_print("misihell: no such file or directory: ",
 			command, NULL, NULL)))
 		return (NULL);
-	*env_path = ft_strsub(*env_path, 5, ft_strlen(*env_path));
-	env_path = ft_strsplit(*env_path, ':');
-	if ((tmp = get_exc_path_last_part(env_path, command)))
-		return (tmp);
-	return (set_errors_r_char(-3, command, NULL));
+	if (!(ret = ft_strsub(tmp, 5, ft_strlen(tmp))) && ft_free(ret))
+		return (NULL);
+	if (!(env_path = ft_strsplit(ret, ':')))
+		return (NULL);
+	free(ret);
+	ret = get_exc_path_last_part(env_path, command);
+	free_arr(env_path);
+	return (ret ? ret : set_errors_r_char(-3, command, NULL));
 }
 
 static int			launch(char *command, char **av, t_list **env)
@@ -77,14 +79,17 @@ static int			launch(char *command, char **av, t_list **env)
 	else if (cpid == 0)
 	{
 		if ((command_path = get_exeutable_path(command, env)))
+		{
 			execve(command_path, av, convert_list_to_array(*env));
+			free(command_path);
+		}
 		if(command)
 			free(command);
 		builtin_exit("1");
 	}
 	else
 		wait(&cpid);
-	return (TRUE);
+	return (ft_check_env(env));
 }
 
 static int			ft_parse_args(t_shell_ctrl *shell)
@@ -104,7 +109,7 @@ static int			ft_parse_args(t_shell_ctrl *shell)
 			if (tmp)
 				free(tmp);
 			i = -1;
-			while (commands[++i])
+			while (ft_check_env(&shell->env) && commands[++i])
 			{
 				args = ft_strsplit(commands[i], ' ');
 				tmp = args[0] ? args[0] : buff;

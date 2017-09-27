@@ -102,6 +102,7 @@ char				*ft_strrev(char *str);
 int					ft_last_indexof(char *str, char c);
 char				*ft_preg_replace(char *str, char *to_replace, char *replace);
 int					get_next_line(const int fd, char **line);
+int					ft_free(char *);
 int					free_arr(char **arr);
 
 

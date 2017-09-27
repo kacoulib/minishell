@@ -13,7 +13,8 @@
 NAME		=	minishell
 CC			=	gcc
 RM			=	rm -f
-CFLAGS		=	-Wall -Werror -Wextra -g3
+CFLAGS		=	-Wall -Werror -Wextra -g
+# CFLAGS		=	-Wall -Werror -Wextra -g3 -fsanitize=address
 LIB			=	-L./libft -lft -lncurses
 CPPFLAGS	=	-I header
 SRCS		=	src/builtins/main.c \
@@ -41,7 +42,7 @@ all:		 	$(NAME)
 
 $(NAME):		$(OBJS)
 				Make -C ./libft
-				$(CC) -o $(NAME) $(OBJS) $(LIB) $(CPPFLAGS)
+				$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIB) $(CPPFLAGS)
 clean:
 				$(RM) $(OBJS)
 				Make -C ./libft fclean

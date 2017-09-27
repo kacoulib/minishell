@@ -67,8 +67,10 @@ int				update_env(t_list *env, char *name, char *value)
 	if (!(tmp = ft_strjoin(name, "=")))
 		return (FALSE);
 	if (value)
-		if (!(tmp = ft_strjoin(tmp, value)))
+		if (!(tmp = ft_freejoin(tmp, value)))
 			return (FALSE);
+	if (env->content)
+		free(env->content);
 	env->content = tmp;
 	return (TRUE);
 }

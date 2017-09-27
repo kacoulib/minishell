@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include <unistd.h>
 # include <signal.h>
+# include <termios.h>
 # include <fcntl.h>
 # include <stdio.h> // to remove
 
@@ -51,11 +52,17 @@ int						create_env(t_list **env, char *name, char *value);
 int						update_env(t_list *env, char *name, char *value);
 int						read_env(t_list **env, char *flags);
 void					del_env(t_list *env, size_t len);
+void					del(void *content, size_t len);
 
 
 t_shell_ctrl			*get_shell(void);
 t_shell_ctrl			*init_shell(char *envp[]);
 int						delete_shell(void);
+void					check_term(void);
+
+int						ft_env_exist(t_list **env, char *key);
+int						ft_check_env(t_list **env);
+
 
 int						ft_print_prompt(void);
 

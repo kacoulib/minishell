@@ -28,14 +28,14 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 
 	if (!key)
 		return (NULL);
-	i = -1;
+	i = ft_strlen(key);
 	tmp = *env;
 	while (tmp)
 	{
 		if (tmp->content)
 		{
-			if (ft_strncmp(tmp->content, key, ft_strlen(key)) == 0)
-				if (((char *)tmp->content)[ft_strlen(key)] == '=')
+			if (ft_strncmp(tmp->content, key, i) == 0)
+				if (((char *)tmp->content)[i] == '=')
 					return (tmp);
 		}
 		tmp = tmp->next;
@@ -150,5 +150,5 @@ char		*get_glags(char *except_flags, char **av, char *command)
 		}
 	}
 	free_arr(flags);
-	return (ft_strjoin(r, " "));
+	return (ft_freejoin(r, " "));
 }

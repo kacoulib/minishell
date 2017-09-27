@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int		check(char **file, char **line, char **tmp)
+int		check(char **file, char **line, char *tmp)
 {
 	int i;
 
@@ -21,17 +21,17 @@ int		check(char **file, char **line, char **tmp)
 		if (*line)
 			free(*line);
 		*line = ft_strdup(*file);
-		free(*file);
-		*file = NULL;
 	}
 	else
 	{
 		i = ft_strchr((const char*)*file, '\n') - *file;
 		*line = ft_strsub(*file, 0, i);
-		*tmp = *file;
-		*file = ft_strdup(*tmp + (i + 1));
-		free(*tmp);
+		tmp = *file;
+		*file = ft_strdup(tmp + (i + 1));
+		free(tmp);
 	}
+	free(*file);
+	*file = NULL;
 	return (1);
 }
 
@@ -58,7 +58,8 @@ int		get_next_line(const int fd, char **line)
 	if (i == -1)
 		return (-1);
 	if (chr || (i == 0 && ft_strlen(file) > 0))
-		return (check(&file, line, (chr ? &tmp : NULL)));
-	free(file);
+		return (check(&file, line, (chr ? tmp : NULL)));
+	// free(file);
+	// line = NULL;
 	return (0);
 }

@@ -26,7 +26,7 @@ int					builtin_exit(char *av)
 	while (av && av[++i])
 		if (!ft_isdigit(av[i]))
 			return (TRUE + set_errors(12, "exit", NULL));
-	ft_lstdel(&shell->env, (void *)del_env);
+	delete_shell();
 	exit(ft_atoi(av));
 	return (TRUE);
 }
