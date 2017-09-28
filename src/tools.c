@@ -71,7 +71,6 @@ static int		special_char_extra(char c)
 		ft_putchar('\v');
 	else if (c == '\\')
 		ft_putchar('\\');
-	ft_putendl("--\n"); // tot remove
 	return (TRUE);
 }
 

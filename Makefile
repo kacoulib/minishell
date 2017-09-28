@@ -24,8 +24,9 @@ SRCS		=	src/builtins/main.c \
 				src/builtins/exit.c \
 				src/builtins/setenv.c \
 				src/builtins/unsetenv.c \
+				src/flags/main.c \
+				src/flags/crud.c \
 				src/tools.c \
-				src/init.c \
 				src/shell.c \
 				src/errors.c \
 				src/prompt.c \

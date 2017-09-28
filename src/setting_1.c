@@ -18,7 +18,7 @@ t_list		*copy_env(char *env[])
 	t_list	*new;
 	t_list	*r;
 
-	if (!env[0])
+	if (!env || !env[0])
 		return (NULL);
 	i = 0;
 	r = ft_lstnew(env[0], ft_strlen(env[0]) + 1);
@@ -48,6 +48,8 @@ char		**convert_list_to_array(t_list *list)
 	int		i;
 	char	**r;
 
+	if (!list)
+		return (NULL);
 	i = list_length(list);
 	if (!i)
 		return (0);
@@ -65,22 +67,13 @@ char		**convert_list_to_array(t_list *list)
 	return (r);
 }
 
-void		del(void *content, size_t len)
-{
-	if (content)
-		free(content);
-	content = NULL;
-	(void)len;
-}
-
 int			ft_env_exist(t_list **env, char *key)
 {
 	return ((ft_getenv_from_list(env, key) ? 1 : 0));
 }
 
-int		ft_check_env(t_list **env)
+int			ft_check_env(t_list **env)
 {
-
 	if (!ft_env_exist(env, "OLDPWD"))
 		set_errors(100, NULL, "env OLDPWD not set.");
 	else if (!ft_env_exist(env, "PWD"))

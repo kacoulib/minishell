@@ -17,5 +17,6 @@ int		ft_free(char *str)
 	if (!str)
 		return (0);
 	free(str);
+	str = NULL;
 	return (1);
 }

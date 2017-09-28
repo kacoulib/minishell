@@ -104,6 +104,8 @@ char				*ft_preg_replace(char *str, char *to_replace, char *replace);
 int					get_next_line(const int fd, char **line);
 int					ft_free(char *);
 int					free_arr(char **arr);
+void				del(t_list *env, size_t len);
+int					arr_contain(char **arr, char *str);
 
 
 

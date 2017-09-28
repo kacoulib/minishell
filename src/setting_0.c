@@ -26,7 +26,7 @@ t_list		*ft_getenv_from_list(t_list **env, char *key)
 	t_list	*tmp;
 	int		i;
 
-	if (!key)
+	if (!env || !key)
 		return (NULL);
 	i = ft_strlen(key);
 	tmp = *env;
@@ -110,45 +110,4 @@ char		*get_single_flags(char *flags[], char *av, char *command)
 		free(tmp);
 	}
 	return (r);
-}
-
-/*
-** Filter and get all flags passed to the command
-** e.g echo -e --version        // the flag -e is passed to the command echo
-**
-** @param  { except_flags }     The command flags that the command can have
-** @param  { av }               The argument pass through the program
-** @param  { command }          The name of the command
-** @return [return NULL on if error or no flags otherwise return the flags]
-*/
-
-char		*get_glags(char *except_flags, char **av, char *command)
-{
-	int		i;
-	char	**flags;
-	char	*tmp;
-	char	*r;
-
-	i = -1;
-	flags = ft_strsplit(except_flags, ' ');
-	r = ft_strdup(" ");
-	while (av[++i] && av[i][0] == '-' && av[i][1])
-	{
-		if ((r = ft_strjoin(r, " ")) && av[i][1] != '-')
-		{
-			if (!(tmp = get_single_flags(flags, av[i], command)))
-				return (NULL);
-			r = ft_strjoin(r, tmp);
-			free(tmp);
-		}
-		else if (index_of_array(flags, av[i]) >= 0)
-			r = ft_strjoin(r, av[i]);
-		else
-		{
-			set_errors(1, command, av[i]);
-			return (NULL);
-		}
-	}
-	free_arr(flags);
-	return (ft_freejoin(r, " "));
 }

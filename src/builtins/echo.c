@@ -15,18 +15,18 @@
 int				builtin_echo(char **av)
 {
 	int			i;
-	t_flag_ctrl	*flag_ctr;
+	t_flag_ctrl	*flag_ctrl;
 
 	if (!av || !av[0])
 	{
 		ft_putchar('\n');
 		return (TRUE);
 	}
-	flag_ctr = create_flag_ctrl("echo", 0, 0);
-	flag_ctr->list = init_flags("- n");
-	flag_ctr->step_back_on_error = 1;
-	flag_ctr->reset_after_error = 1;
-	i = builtin_echo_args_limit(flag_ctr, av) - 1;
+	flag_ctrl = create_flag_ctrl("echo", 0, 0);
+	flag_ctrl->list = init_flags("- n");
+	flag_ctrl->step_back_on_error = 1;
+	flag_ctrl->reset_after_error = 1;
+	i = set_flag_output_and_get_limit(flag_ctrl, av) - 1;
 	while (av[++i])
 	{
 		if (ft_indexof(av[i], '\\') > -1)
@@ -35,7 +35,8 @@ int				builtin_echo(char **av)
 			ft_putstr(av[i]);
 		av[i + 1] ? ft_putchar(' ') : ' ';
 	}
-	if (!ft_strchr(flag_ctr->output, '1'))
+	if (!ft_strchr(flag_ctrl->output, '1'))
 		ft_putchar('\n');
+	delete_flag_ctrl(flag_ctrl);
 	return (TRUE);
 }

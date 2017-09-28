@@ -12,22 +12,15 @@
 
 #include "minishell.h"
 
-static int			builtin_env_extra(t_list **env, char **av)
+static int			builtin_env_extra(t_flag_ctrl *flag_ctrl, t_list **new_env,
+	int show_env)
 {
-	int				i;
-	char			**tmp;
-
-	i = get_args_limit(av) - 1;
-	while (av[++i])
-	{
-		if (ft_indexof(av[i], '=') > 0)
-		{
-			tmp = ft_strsplit(av[i], '=');
-			builtin_setenv(env, tmp);
-			free_arr(tmp);
-		}
-	}
-	return (1);
+	if (flag_contain(flag_ctrl, "2"))
+		show_env = 0;
+	if (show_env)
+		read_env(new_env, ft_strdup(flag_ctrl->output));
+	delete_flag_ctrl(flag_ctrl);
+	return (TRUE);
 }
 
 /*
@@ -41,26 +34,27 @@ static int			builtin_env_extra(t_list **env, char **av)
 int					builtin_env(t_list **env, char **av)
 {
 	int				show_env;
-	char			*flags[2];
+	int				i;
+	char			*tmp;
+	t_list			**new_env;
+	t_flag_ctrl		*flag_ctrl;
 
 	show_env = 1;
-	flags[0] = ft_strdup(" i u - --ignore-environment --null --unset --help --version ");
-	if (!(flags[1] = get_glags(flags[0], av, "env")))
-		return (0);
-	if (ft_strstr(flags[1], " --help ") && (show_env = 0))
+	new_env = env;
+	tmp = "i u - --ignore-environment --null --unset --help --version";
+	flag_ctrl = create_flag_ctrl("env", 0, 0);
+	flag_ctrl->list = init_flags(tmp);
+	flag_ctrl->has_dash = 1;
+	i = set_flag_output_and_get_limit(flag_ctrl, av) - 1;
+	if (flag_contain(flag_ctrl, "6") && !(show_env = 0))
 	{
 		ft_putendl("Usage: please type man help for more information\n");
 		ft_putendl("The options are:\n");
 		ft_putendl("-i, --ignore-environment, -0, -u\n");
 	}
-	else if (ft_strstr(flags[1], " -i "))
-		show_env = 0;
-	else if (ft_strstr(flags[1], " --version ") && (show_env = 0))
-		ft_putstr("\nenv (GNU coreutils) 8.21\nCopyright © 2017 kacoulib.\n\n");
-	else if ((ft_strstr(flags[1], " --ignore-environment ") ||
-		ft_strstr(flags[1], " i ")) && !(show_env = 0))
-		ft_lstdel(env, del);
-	if (builtin_env_extra(env, av) && show_env)
-		read_env(env, flags[1]);
-	return (0);
+	else if (flag_contain(flag_ctrl, "0") || flag_contain(flag_ctrl, "3"))
+		new_env = NULL;
+	else if (flag_contain(flag_ctrl, "7") && !(show_env = 0))
+		ft_putstr("\nCopyright © 2017 kacoulib.\n\n");
+	return (builtin_env_extra(flag_ctrl, new_env, show_env));
 }

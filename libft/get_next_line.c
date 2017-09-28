@@ -59,7 +59,5 @@ int		get_next_line(const int fd, char **line)
 		return (-1);
 	if (chr || (i == 0 && ft_strlen(file) > 0))
 		return (check(&file, line, (chr ? tmp : NULL)));
-	// free(file);
-	// line = NULL;
 	return (0);
 }

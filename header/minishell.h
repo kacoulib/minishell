@@ -22,9 +22,9 @@
 
 typedef struct			s_flag_ctrl
 {
-	char				*program_name;
+	char				program_name[256];
 	int					has_dash;
-	int					has_error;
+	int					show_error;
 	int					step_back_on_error;
 	int					reset_after_error;
 	char				output[256];
@@ -45,14 +45,13 @@ int						builtin_env_extra_unset(t_list **env, char **av,
 int						builtin_setenv(t_list **env, char **av);
 int						builtin_unsetenv(t_list **env, char **av);
 int						builtin_exit(char *av);
-int						builtin_echo_args_limit(t_flag_ctrl *flag_ctr, char **av);
+// int						builtin_echo_args_limit(t_flag_ctrl *flag_ctr, char **av);
 
 
 int						create_env(t_list **env, char *name, char *value);
 int						update_env(t_list *env, char *name, char *value);
 int						read_env(t_list **env, char *flags);
 void					del_env(t_list *env, size_t len);
-void					del(void *content, size_t len);
 
 
 t_shell_ctrl			*get_shell(void);
@@ -73,8 +72,15 @@ char					*ft_getenv_val(t_list **env, char *key);
 t_list					*copy_env(char *env[]);
 t_list					*ft_getenv_from_list(t_list **env, char *key);
 
-char					*get_glags(char *except_flags, char **av, char *command);
 t_list					*init_flags(char *flags);
+int						get_long_flag_id(t_flag_ctrl *flag_ctrl, char *av);
+int						get_single_flag_id(t_flag_ctrl *flag_ctrl, char *av);
+int						delete_flag_ctrl(t_flag_ctrl *ctrl);
+int						flag_contain(t_flag_ctrl *flag_ctrl, char *str);
+int						set_flag_output_and_get_limit(t_flag_ctrl *flag_ctrl,
+	char **av);
+
+
 
 int						get_args_limit(char **av);
 
@@ -83,7 +89,6 @@ char					*set_errors_r_char(int id, char *command, char *name);
 
 int						special_char(char *str);
 int						free_arr(char **arr);
-void					del(void *content, size_t len);
 int						check_access(char *command, char *path);
 
 char					**convert_list_to_array(t_list *list);

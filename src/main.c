@@ -83,8 +83,6 @@ static int			launch(char *command, char **av, t_list **env)
 			execve(command_path, av, convert_list_to_array(*env));
 			free(command_path);
 		}
-		if(command)
-			free(command);
 		builtin_exit("1");
 	}
 	else
@@ -106,8 +104,7 @@ static int			ft_parse_args(t_shell_ctrl *shell)
 		{
 			tmp = ft_strsub(buff, 0, i);
 			commands = ft_strsplit(tmp, ';');
-			if (tmp)
-				free(tmp);
+			ft_free(tmp);
 			i = -1;
 			while (ft_check_env(&shell->env) && commands[++i])
 			{
@@ -131,7 +128,7 @@ int					main(int ac, char *av[], char *envp[])
 	ft_print_prompt();
 	signal_handler();
 	ft_parse_args(shell);
-	ft_lstdel(&shell->env, (void *)del_env);
+	ft_lstdel(&shell->env, (void *)del);
 	free(shell);
 	return (ac && av);
 }

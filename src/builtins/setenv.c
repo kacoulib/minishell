@@ -23,12 +23,23 @@
 
 int				builtin_setenv(t_list **env, char **av)
 {
+	int			i;
 	t_list		*old;
+	char		*key;
+	char		*val;
 
-	if (!av || !av[0])
-		return (read_env(env, NULL));
-	if (av[2])
+	if (!av || !av[0] || !av[1] || av[2])
 		return (set_errors(4, "setenv", NULL));
+	key = av[0];
+	val = av[1];
+	i = -1;
+	while (key[++i])
+		if (!ft_isalnum(key[i]))
+			return (set_errors(15, "setenv", NULL));
+	i = -1;
+	while (val[++i])
+		if (!ft_isalnum(val[i]))
+			return (set_errors(15, "setenv", NULL));
 	if ((old = ft_getenv_from_list(env, av[0])))
 		update_env(old, av[0], av[1]);
 	else

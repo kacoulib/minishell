@@ -75,13 +75,6 @@ int				update_env(t_list *env, char *name, char *value)
 	return (TRUE);
 }
 
-void				del_env(t_list *env, size_t len)
-{
-	if (env)
-		free(env);
-	(void)len;
-}
-
 /*
 ** Switch two env
 **
@@ -92,12 +85,12 @@ void				del_env(t_list *env, size_t len)
 ** @return     [return 1 on success otherwise return 0]
 */
 
-int			swap_env(t_list **env, char *s1, char *s2)
+int				swap_env(t_list **env, char *s1, char *s2)
 {
-	t_list	*new;
-	t_list	*old;
-	char	**n;
-	char	**o;
+	t_list		*new;
+	t_list		*old;
+	char		**n;
+	char		**o;
 
 	if (!s1 || !s2)
 		return (FALSE);
@@ -105,9 +98,13 @@ int			swap_env(t_list **env, char *s1, char *s2)
 	old = ft_getenv_from_list(env, s2);
 	if (!(old) || !new)
 		return (FALSE);
-	if (!(n = ft_strsplit(new->content, '=')) || !(o = ft_strsplit(old->content, '=')))
+	n = ft_strsplit(new->content, '=');
+	o = ft_strsplit(old->content, '=');
+	if (!n || !o)
 		return (FALSE);
 	update_env(new, n[0], o[1]);
 	update_env(new, o[0], n[1]);
+	free_arr(n);
+	free_arr(n);
 	return (TRUE);
 }

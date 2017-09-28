@@ -12,15 +12,24 @@
 
 #include "minishell.h"
 
-static int			builtin_unsetenv_extra(t_list **env, char **av)
+static int			builtin_unsetenv_extra(t_list **env, t_list *tmp, char **av)
 {
-	char			*tmp;
+	t_list			*current;
 
-	if (!(tmp = av[0] ? ft_strtrim(av[0]) : NULL))
-		return (0);
-	if (ft_strstr(tmp, "*"))
-		ft_lstdel(env, del);
-	return (0);
+	current = *env;
+	while (current != NULL)
+	{
+		if (current->next && current->next == tmp)
+		{
+			current->next = tmp->next;
+			ft_lstdelone(&tmp, (void *)del);
+			return (1);
+		}
+		current = current->next;
+	}
+	if (ft_strstr(av[0], "*"))
+		ft_lstdel(env, (void *)del);
+	return (FALSE);
 }
 
 /*
@@ -34,31 +43,18 @@ static int			builtin_unsetenv_extra(t_list **env, char **av)
 
 int					builtin_unsetenv(t_list **env, char **av)
 {
-	int				i;
 	t_list			*tmp;
-	t_list			*prev;
 
-	if ((!av || !av[0]))
+	if ((!av || !av[0]) || av[1])
 		return (set_errors(-2, "unsetenv", "NAME"));
-	i = ft_strlen(av[0]);
-	tmp = *env;
-	prev = NULL;
-	while (tmp)
+	if (!env || !*env)
+		return (1);
+	tmp = ft_getenv_from_list(env, av[0]);
+	if (*env == tmp)
 	{
-		if (ft_strncmp(tmp->content, av[0], i) == 0)
-		{
-			if (((char *)tmp->content)[i] == '=')
-			{
-				if (!prev && (*env = (*env)->next))
-					prev = tmp->next;
-				else
-					prev->next = tmp->next;
-				free(tmp);
-				tmp = prev;
-			}
-		}
-		prev = tmp;
-		tmp = tmp->next;
+		*env = tmp->next;
+		ft_lstdelone(&tmp, (void *)del);
+		return (1);
 	}
-	return (builtin_unsetenv_extra(env, av));
+	return (builtin_unsetenv_extra(env, tmp, av));
 }

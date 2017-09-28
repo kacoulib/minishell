@@ -34,6 +34,5 @@ char			*convert_tilde_to_home(char *path, char *home)
 	if (!path || !home)
 		return (NULL);
 	ret = ft_preg_replace(path, "~", home);
-	printf("%s %s %s\n", path, home, ret);
-	return (path);
+	return (ret);
 }

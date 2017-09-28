@@ -41,7 +41,7 @@ int						delete_shell(void)
 	if (!(shell = get_shell()))
 		return (FALSE);
 	env = shell->env;
-	ft_lstdel(&env, (void *)del_env);
+	ft_lstdel(&env, (void *)del);
 	free(shell);
 	return (TRUE);
 }

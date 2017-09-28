@@ -24,11 +24,12 @@ static int		ft_set_old_and_new_pwd(t_list **env, char *old_path)
 	if (!(pwd = ft_getenv_from_list(env, "PWD")))
 		return (set_errors(100, NULL, "cd error"));
 	if (!(old_pwd = ft_getenv_from_list(env, "OLDPWD")))
-			return (set_errors(100, NULL, "cd error"));
+		return (set_errors(100, NULL, "cd error"));
 	update_env(pwd, "PWD", new_path);
 	update_env(old_pwd, "OLDPWD", old_path);
 	if (old_path)
 		free(old_path);
+	old_path = NULL;
 	return (TRUE);
 }
 
@@ -78,13 +79,22 @@ int				builtin_cd(t_list **env, char **av)
 
 	if (av && av[0] && av[1])
 		return (set_errors(4, "cd", NULL));
-	if (!(path = ft_get_path_from_av(env, av)))
+	if (!av[0])
+	{
+		path = ft_getenv_val(env, "HOME");
+	}
+	else if (!(path = ft_get_path_from_av(env, av)))
 		return (set_errors(-1, NULL, NULL));
 	if (!check_access("cd", path))
 		return (FALSE);
-	if ((old_path = ft_getenv_val(env, "PWD")))
-		old_path = ft_strdup(old_path);
-	if (chdir(path) < 0)
+	old_path = ft_strdup(ft_getenv_val(env, "PWD"));
+	if (chdir(path) < 0 && ft_free(old_path) > -1)
+	{
+		if (av[0][0] == '~' && path[0] != '~')
+			free(path);
 		return (set_errors(0, NULL, path));
+	}
+	if (av && av[0] && av[0][0] == '~' && path[0] != '~')
+		free(path);
 	return (ft_set_old_and_new_pwd(env, old_path));
 }

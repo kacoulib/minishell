@@ -22,9 +22,30 @@
 ** @return      [return 0]
 */
 
+static int		set_errors_third(int id, char *command, char *name)
+{
+	if (id == 14)
+		ft_print(command, ": ", name, " not set");
+	else if (id == 15)
+	{
+		ft_putstr(command);
+		ft_putendl("Variable name must contain alphanumeric characters");
+	}
+	else if (id == 100)
+		ft_putendl(name);
+	ft_putstr("\033[0m");
+	return (FALSE);
+}
+
 static int		set_errors_second(int id, char *command, char *name)
 {
-	if (id == 9)
+	if (id == 4)
+	{
+		ft_putstr(command);
+		ft_putstr(": to many args.");
+		ft_putendl("See --help for more information.");
+	}
+	else if (id == 9)
 		ft_print("command\033[0m ", command,
 			" \033[1;31mpermission denied: ", name);
 	else if (id == 10)
@@ -38,12 +59,9 @@ static int		set_errors_second(int id, char *command, char *name)
 		ft_print(command, ": Badly formed number.'", NULL, NULL);
 	else if (id == 13)
 		ft_putendl("Shell could not be initialized");
-	else if (id == 14)
-		ft_print(command, ": ", name, " not set");
-	else if (id == 100)
-		ft_putendl(name);
-	return (FALSE);
+	return (set_errors_third(id, command, name));
 }
+
 int				set_errors(int id, char *command, char *name)
 {
 	if (id != 1 || ft_strcmp(command, "echo") != 0)
@@ -64,14 +82,11 @@ int				set_errors(int id, char *command, char *name)
 		ft_putstr("name is NULL, points to a string of length 0, or contains");
 		ft_putstr("an '=' character.");
 	}
-	else if (id == 4)
-		ft_print(command, ": to many args.", "See --help for more information.", NULL);
-	ft_putstr("\033[0m");
 	return (set_errors_second(id, command, name));
 }
-char				*set_errors_r_char(int id, char *command, char *name)
+
+char			*set_errors_r_char(int id, char *command, char *name)
 {
-	if (!set_errors(id, command, name))
-		return (NULL);
-	return ("TRUE");
+	set_errors(id, command, name);
+	return (NULL);
 }
